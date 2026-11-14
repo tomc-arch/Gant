@@ -1,1 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marchais Honoré</title>
+    <!-- Import Google Fonts : Roboto et Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #f8f7f4; /* Blanc cassé mat, typique du papier d'art */
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- Écran d'accueil (Splash Screen) --- */
+        #splash {
+            position: fixed;
+            inset: 0;
+            background-color: #252322;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+        }
+
+        #splash.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #splash h1 {
+            font-family: 'Roboto', sans-serif;
+            color: #ffffff;
+            font-weight: 300;
+            font-size: 2.2rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+        }
+
+        /* --- Page Principale --- */
+        main {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 4vw 6vw;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+        }
+
+        main.visible {
+            opacity: 1;
+        }
+
+        header {
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #252322;
+        }
+
+        /* --- Le Manifeste (Aligné à droite) --- */
+        .manifesto-container {
+            align-self: flex-end;
+            max-width: 540px;
+            text-align: right;
+            margin: auto 0;
+        }
+
+        .manifesto {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 0.95rem;
+            line-height: 1.9;
+            color: #2a2827;
+            white-space: pre-line;
+        }
+
+        /* --- Section VIP / Footer minimaliste --- */
+        footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .vip-form {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 1px solid #252322;
+            padding-bottom: 0.4rem;
+        }
+
+        .vip-form input {
+            border: none;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+            color: #252322;
+            width: 240px;
+        }
+
+        .vip-form input::placeholder {
+            color: #888888;
+        }
+
+        .vip-form button {
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            color: #252322;
+            font-weight: 400;
+            transition: opacity 0.2s;
+        }
+
+        .vip-form button:hover {
+            opacity: 0.6;
+        }
+
+        /* Responsive mobile */
+        @media (max-width: 768px) {
+            main {
+                padding: 8vw 6vw;
+            }
+            .manifesto-container {
+                text-align: left;
+                align-self: flex-start;
+            }
+            footer {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Rideau d'accueil (3 secondes) -->
+    <div id="splash">
+        <h1>Marchais Honoré</h1>
+    </div>
+
+    <!-- Contenu Principal -->
+    <main id="main">
+        <header>
+            Marchais Honoré
+        </header>
+
+        <div class="manifesto-container">
+            <p class="manifesto">« Il n'est de bons gants que ceux de Grenoble. »
+
+Pendant deux siècles, de la rigueur des cours européennes aux avant-postes du grand monde, une certitude a dicté l'élégance : le véritable gant ne s'industrialise pas, il se façonne.
+
+Une seconde peau, née d'une obsession maladive du détail.
+
+L'industrie a troqué le savoir-faire contre la marge. Elle a industrialisé le prestige pour le vendre en masse, aux antipodes du temps long. Le faux luxe a gagné.
+
+Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la main sur le savoir-faire.</p>
+        </div>
+
+        <footer>
+            <form class="vip-form" onsubmit="event.preventDefault(); alert('Votre entrée dans le cercle a bien été enregistrée.');">
+                <input type="email" placeholder="Entrez votre e-mail (Accès privé)" required>
+                <button type="submit">Rejoindre</button>
+            </form>
+        </footer>
+    </main>
+
+    <!-- Script de temporisation (3 secondes) -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash');
+                const main = document.getElementById('main');
+                
+                splash.classList.add('fade-out');
+                main.classList.add('visible');
+            }, 3000); // 3000 millisecondes = 3 secondes
+        });
+    </script>
+</body>
+</html>

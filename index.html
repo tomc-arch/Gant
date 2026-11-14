@@ -23,11 +23,13 @@
             overflow-x: hidden;
         }
 
-        /* --- Écran d'accueil (Splash Screen avec animation 90 images) --- */
+        /* --- Écran d'accueil (Splash Screen corrigé pour fond uniforme & taille dynamique) --- */
         #splash {
             position: fixed;
             inset: 0;
-            background-color: #0d0c1a; /* Fond sombre demandé */
+            width: 100vw;
+            height: 100dvh; /* Utilisation de dvh pour éviter les bandes sur mobile */
+            background-color: #0d0c1a; /* Fond sombre uniforme */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -41,8 +43,9 @@
         }
 
         #splash img {
-            max-width: 280px;
-            height: auto;
+            height: 20vh; /* 20% de la dimension verticale sur ordinateur */
+            width: auto;
+            object-fit: contain;
         }
 
         /* --- Barre de Navigation transparente (Logo en haut, Menus centrés en dessous) --- */
@@ -64,7 +67,7 @@
         }
 
         .nav-logo img {
-            height: 32px; /* Ajuste la taille de ton icône MH_icone ici */
+            height: 32px;
             width: auto;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
         }
@@ -83,7 +86,6 @@
             letter-spacing: 0.15em;
             color: #ffffff;
             text-decoration: none;
-            /* Ombre portée exigée pour la visibilité sur fond clair */
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
             transition: opacity 0.2s;
         }
@@ -141,7 +143,7 @@
             font-weight: 300;
             font-size: 1.05rem;
             line-height: 1.8;
-            color: #2a252a; /* Gris foncé demandé */
+            color: #2a252a;
             white-space: pre-line;
         }
 
@@ -192,6 +194,11 @@
 
         /* --- Responsive Mobile --- */
         @media (max-width: 768px) {
+            /* Animation à 30% de la hauteur sur téléphone */
+            #splash img {
+                height: 30vh;
+            }
+
             .hamburger {
                 display: flex;
             }
@@ -224,12 +231,12 @@
 </head>
 <body>
 
-    <!-- Rideau d'accueil (Splash avec séquence d'animation depuis le dossier AnimationEntree) -->
+    <!-- Rideau d'accueil (Splash avec séquence d'animation) -->
     <div id="splash">
         <img id="splash-anim" src="AnimationEntree/LOGO_MH_PourAnimation_00000.png" alt="Animation Marchais Honoré">
     </div>
 
-    <!-- Barre de Navigation (Logo centré en haut, menus centrés en dessous) -->
+    <!-- Barre de Navigation -->
     <nav>
         <button class="hamburger" id="hamburger-btn" aria-label="Menu">
             <span></span>
@@ -270,16 +277,14 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         </footer>
     </main>
 
-    <!-- Scripts : Animation 90 images depuis AnimationEntree et Menu Mobile -->
+    <!-- Scripts -->
     <script>
-        // Gestion de l'animation de la séquence d'images (90 frames sur 3 secondes)
         const totalFrames = 90;
         const framePath = (index) => {
             const paddedIndex = String(index).padStart(5, '0');
             return `AnimationEntree/LOGO_MH_PourAnimation_${paddedIndex}.png`;
         };
 
-        // Préchargement des images pour fluidité
         const frames = [];
         for (let i = 0; i <= totalFrames; i++) {
             const img = new Image();
@@ -290,7 +295,7 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         window.addEventListener('DOMContentLoaded', () => {
             const imgElement = document.getElementById('splash-anim');
             let currentFrame = 0;
-            const intervalTime = 3000 / totalFrames; // ~33.3ms par frame pour 3 secondes
+            const intervalTime = 3000 / totalFrames;
 
             const animInterval = setInterval(() => {
                 currentFrame++;
@@ -301,7 +306,6 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
                 }
             }, intervalTime);
 
-            // Disparition du splash screen après 3 secondes nettes
             setTimeout(() => {
                 const splash = document.getElementById('splash');
                 const main = document.getElementById('main');
@@ -311,7 +315,6 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
             }, 3000);
         });
 
-        // Gestion du menu mobile (Hamburger)
         const hamburgerBtn = document.getElementById('hamburger-btn');
         const navMenu = document.getElementById('nav-menu');
 

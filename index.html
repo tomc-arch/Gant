@@ -45,18 +45,28 @@
             height: auto;
         }
 
-        /* --- Barre de Navigation transparente --- */
+        /* --- Barre de Navigation transparente (Logo en haut, Menus centrés en dessous) --- */
         nav {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            padding: 2rem 4vw;
+            padding: 2rem 2rem 1rem 2rem;
             z-index: 10;
             background: transparent;
+        }
+
+        .nav-logo {
+            margin-bottom: 1rem;
+        }
+
+        .nav-logo img {
+            height: 32px; /* Ajuste la taille de ton icône MH_icone ici */
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
         }
 
         .nav-links {
@@ -73,8 +83,8 @@
             letter-spacing: 0.15em;
             color: #ffffff;
             text-decoration: none;
-            /* Ombre portée exigée pour la visibilité */
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            /* Ombre portée exigée pour la visibilité sur fond clair */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
             transition: opacity 0.2s;
         }
 
@@ -82,13 +92,7 @@
             opacity: 0.7;
         }
 
-        .nav-logo img {
-            height: 28px; /* Ajuste la hauteur de ton icône MH_icone ici */
-            width: auto;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-        }
-
-        /* Menu Hamburger (Mobile) */
+        /* Menu Hamburger (Mobile) - Positionné en haut à gauche */
         .hamburger {
             display: none;
             background: none;
@@ -96,6 +100,9 @@
             cursor: pointer;
             flex-direction: column;
             gap: 6px;
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
             z-index: 20;
         }
 
@@ -113,7 +120,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 8vw 6vw 4vw 6vw;
+            padding: 14vw 6vw 4vw 6vw;
             opacity: 0;
             transition: opacity 1.2s ease-in-out;
         }
@@ -210,19 +217,19 @@
             }
 
             main {
-                padding: 12vw 6vw 6vw 6vw;
+                padding: 22vw 6vw 6vw 6vw;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Rideau d'accueil (Splash avec séquence d'animation) -->
+    <!-- Rideau d'accueil (Splash avec séquence d'animation depuis le dossier AnimationEntree) -->
     <div id="splash">
-        <img id="splash-anim" src="images/LOGO_MH_PourAnimation_00000.png" alt="Animation Marchais Honoré">
+        <img id="splash-anim" src="AnimationEntree/LOGO_MH_PourAnimation_00000.png" alt="Animation Marchais Honoré">
     </div>
 
-    <!-- Barre de Navigation -->
+    <!-- Barre de Navigation (Logo centré en haut, menus centrés en dessous) -->
     <nav>
         <button class="hamburger" id="hamburger-btn" aria-label="Menu">
             <span></span>
@@ -230,21 +237,19 @@
             <span></span>
         </button>
         
+        <div class="nav-logo">
+            <img src="images/MH_icone.png" alt="Marchais Honoré">
+        </div>
+
         <ul class="nav-links" id="nav-menu">
             <li><a href="#manifesto">manifesto</a></li>
             <li><a href="#gantiers">gantiers</a></li>
             <li><a href="#archives">archives</a></li>
         </ul>
-
-        <div class="nav-logo">
-            <img src="images/MH_icone.png" alt="Marchais Honoré">
-        </div>
     </nav>
 
     <!-- Contenu Principal -->
     <main id="main">
-        <div style="height: 40px;"></div> <!-- Espaceur pour la navbar -->
-
         <div class="manifesto-container" id="manifesto">
             <p class="manifesto">« Il n'est de bons gants que ceux de Grenoble. »
 
@@ -265,13 +270,13 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         </footer>
     </main>
 
-    <!-- Scripts : Animation 90 images et Menu Mobile -->
+    <!-- Scripts : Animation 90 images depuis AnimationEntree et Menu Mobile -->
     <script>
         // Gestion de l'animation de la séquence d'images (90 frames sur 3 secondes)
         const totalFrames = 90;
         const framePath = (index) => {
             const paddedIndex = String(index).padStart(5, '0');
-            return `images/LOGO_MH_PourAnimation_${paddedIndex}.png`;
+            return `AnimationEntree/LOGO_MH_PourAnimation_${paddedIndex}.png`;
         };
 
         // Préchargement des images pour fluidité

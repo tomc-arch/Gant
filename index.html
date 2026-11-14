@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marchais Honoré</title>
-    <!-- Import Google Fonts : Roboto et Inter -->
+    <!-- Import Google Fonts : Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -18,16 +18,16 @@
         body, html {
             width: 100%;
             height: 100%;
-            background-color: #f8f7f4; /* Blanc cassé mat, typique du papier d'art */
+            background-color: #f8f7f4; /* Blanc cassé mat */
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
 
-        /* --- Écran d'accueil (Splash Screen) --- */
+        /* --- Écran d'accueil (Splash Screen avec animation 90 images) --- */
         #splash {
             position: fixed;
             inset: 0;
-            background-color: #080909;
+            background-color: #0d0c1a; /* Fond sombre demandé */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -40,13 +40,71 @@
             visibility: hidden;
         }
 
-        #splash h1 {
-            font-family: 'Roboto', sans-serif;
-            color: #ffffff;
-            font-weight: 300;
-            font-size: 2.2rem;
-            letter-spacing: 0.25em;
+        #splash img {
+            max-width: 280px;
+            height: auto;
+        }
+
+        /* --- Barre de Navigation transparente --- */
+        nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 4vw;
+            z-index: 10;
+            background: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
             text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #ffffff;
+            text-decoration: none;
+            /* Ombre portée exigée pour la visibilité */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            transition: opacity 0.2s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.7;
+        }
+
+        .nav-logo img {
+            height: 28px; /* Ajuste la hauteur de ton icône MH_icone ici */
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        }
+
+        /* Menu Hamburger (Mobile) */
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 20;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
 
         /* --- Page Principale --- */
@@ -55,7 +113,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 4vw 6vw;
+            padding: 8vw 6vw 4vw 6vw;
             opacity: 0;
             transition: opacity 1.2s ease-in-out;
         }
@@ -64,42 +122,33 @@
             opacity: 1;
         }
 
-        header {
-            font-family: 'Roboto', sans-serif;
-            font-size: 0.8rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: #252322;
-        }
-
-        /* --- Le Manifeste (Aligné à droite) --- */
+        /* --- Le Manifeste (Aligné à gauche) --- */
         .manifesto-container {
-            align-self: flex-end;
-            max-width: 540px;
-            text-align: right;
+            max-width: 650px;
+            text-align: left;
             margin: auto 0;
         }
 
         .manifesto {
             font-family: 'Inter', sans-serif;
             font-weight: 300;
-            font-size: 0.95rem;
-            line-height: 1.9;
-            color: #2a2827;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #2a252a; /* Gris foncé demandé */
             white-space: pre-line;
         }
 
         /* --- Section VIP / Footer minimaliste --- */
         footer {
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-start;
             align-items: center;
         }
 
         .vip-form {
             display: flex;
             gap: 1rem;
-            border-bottom: 1px solid #252322;
+            border-bottom: 1px solid #2a252a;
             padding-bottom: 0.4rem;
         }
 
@@ -109,12 +158,12 @@
             font-family: 'Inter', sans-serif;
             font-size: 0.85rem;
             outline: none;
-            color: #252322;
+            color: #2a252a;
             width: 240px;
         }
 
         .vip-form input::placeholder {
-            color: #888888;
+            color: #777777;
         }
 
         .vip-form button {
@@ -125,8 +174,8 @@
             text-transform: uppercase;
             letter-spacing: 0.15em;
             cursor: pointer;
-            color: #252322;
-            font-weight: 400;
+            color: #2a252a;
+            font-weight: 600;
             transition: opacity 0.2s;
         }
 
@@ -134,35 +183,69 @@
             opacity: 0.6;
         }
 
-        /* Responsive mobile */
+        /* --- Responsive Mobile --- */
         @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                inset: 0;
+                background-color: rgba(13, 12, 26, 0.95);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .nav-links.active {
+                transform: translateX(0);
+            }
+
+            .nav-links a {
+                font-size: 1.2rem;
+            }
+
             main {
-                padding: 8vw 6vw;
-            }
-            .manifesto-container {
-                text-align: left;
-                align-self: flex-start;
-            }
-            footer {
-                justify-content: flex-start;
+                padding: 12vw 6vw 6vw 6vw;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Rideau d'accueil (3 secondes) -->
+    <!-- Rideau d'accueil (Splash avec séquence d'animation) -->
     <div id="splash">
-        <h1>Marchais Honoré</h1>
+        <img id="splash-anim" src="images/LOGO_MH_PourAnimation_00000.png" alt="Animation Marchais Honoré">
     </div>
+
+    <!-- Barre de Navigation -->
+    <nav>
+        <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <ul class="nav-links" id="nav-menu">
+            <li><a href="#manifesto">manifesto</a></li>
+            <li><a href="#gantiers">gantiers</a></li>
+            <li><a href="#archives">archives</a></li>
+        </ul>
+
+        <div class="nav-logo">
+            <img src="images/MH_icone.png" alt="Marchais Honoré">
+        </div>
+    </nav>
 
     <!-- Contenu Principal -->
     <main id="main">
-        <header>
-            Marchais Honoré
-        </header>
+        <div style="height: 40px;"></div> <!-- Espaceur pour la navbar -->
 
-        <div class="manifesto-container">
+        <div class="manifesto-container" id="manifesto">
             <p class="manifesto">« Il n'est de bons gants que ceux de Grenoble. »
 
 Pendant deux siècles, de la rigueur des cours européennes aux avant-postes du grand monde, une certitude a dicté l'élégance : le véritable gant ne s'industrialise pas, il se façonne.
@@ -182,16 +265,53 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         </footer>
     </main>
 
-    <!-- Script de temporisation (3 secondes) -->
+    <!-- Scripts : Animation 90 images et Menu Mobile -->
     <script>
+        // Gestion de l'animation de la séquence d'images (90 frames sur 3 secondes)
+        const totalFrames = 90;
+        const framePath = (index) => {
+            const paddedIndex = String(index).padStart(5, '0');
+            return `images/LOGO_MH_PourAnimation_${paddedIndex}.png`;
+        };
+
+        // Préchargement des images pour fluidité
+        const frames = [];
+        for (let i = 0; i <= totalFrames; i++) {
+            const img = new Image();
+            img.src = framePath(i);
+            frames.push(img);
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
+            const imgElement = document.getElementById('splash-anim');
+            let currentFrame = 0;
+            const intervalTime = 3000 / totalFrames; // ~33.3ms par frame pour 3 secondes
+
+            const animInterval = setInterval(() => {
+                currentFrame++;
+                if (currentFrame <= totalFrames) {
+                    imgElement.src = frames[currentFrame].src;
+                } else {
+                    clearInterval(animInterval);
+                }
+            }, intervalTime);
+
+            // Disparition du splash screen après 3 secondes nettes
             setTimeout(() => {
                 const splash = document.getElementById('splash');
                 const main = document.getElementById('main');
                 
                 splash.classList.add('fade-out');
                 main.classList.add('visible');
-            }, 3000); // 3000 millisecondes = 3 secondes
+            }, 3000);
+        });
+
+        // Gestion du menu mobile (Hamburger)
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const navMenu = document.getElementById('nav-menu');
+
+        hamburgerBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
         });
     </script>
 </body>

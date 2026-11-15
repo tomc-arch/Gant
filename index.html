@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marchais Honoré</title>
+    <!-- Import Google Fonts : Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -22,16 +23,13 @@
             overflow-x: hidden;
         }
 
-        /* --- Écran d'accueil (Splash Screen) --- */
+        /* --- Écran d'accueil épuré (Fond uni uniforme) --- */
         #splash {
             position: fixed;
             inset: 0;
             width: 100vw;
             height: 100dvh;
-            background-color: #0d0c1a; /* Fond sombre uniforme */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background-color: #0d0c1a; /* Fond sombre demandé */
             z-index: 999;
             opacity: 1;
             transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
@@ -40,21 +38,6 @@
         #splash.fade-out {
             opacity: 0;
             visibility: hidden;
-        }
-
-        .anim-container {
-            height: 20vh; /* L'animation prend 20% de la hauteur de l'écran */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #splash-anim {
-            height: 100%;
-            width: auto;
-            object-fit: contain;
-            /* La magie CSS : efface le fond noir de l'image pour l'isoler parfaitement sur le #0d0c1a */
-            mix-blend-mode: screen; 
         }
 
         /* --- Barre de Navigation --- */
@@ -129,7 +112,7 @@
             font-weight: 300;
             font-size: 1.05rem;
             line-height: 1.8;
-            color: #2a252a;
+            color: #2a252a; /* Gris foncé */
             white-space: pre-line;
         }
 
@@ -180,14 +163,10 @@
 </head>
 <body>
 
-    <!-- Rideau d'accueil : 1s de pause, 3s d'animation, 1s de fade-out -->
-    <div id="splash">
-        <div class="anim-container">
-            <img id="splash-anim" src="AnimationEntree/LOGO_MH_PourAnimation_00000.png" alt="Animation Marchais Honoré">
-        </div>
-    </div>
+    <!-- Rideau d'accueil épuré (Fond uni #0d0c1a) -->
+    <div id="splash"></div>
 
-    <!-- Barre de Navigation -->
+    <!-- Barre de Navigation (Logo centré, menus centrés en dessous) -->
     <nav>
         <div class="nav-logo">
             <img src="images/MH_icone.png" alt="Marchais Honoré">
@@ -221,42 +200,16 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         </footer>
     </main>
 
-    <!-- Script de synchronisation -->
+    <!-- Script de transition épuré (1 seconde de splash puis fade-out) -->
     <script>
-        const totalFrames = 90;
-        const imgElement = document.getElementById('splash-anim');
-        const splash = document.getElementById('splash');
-        const main = document.getElementById('main');
-
-        // Préchargement des 91 images
-        const frames = [];
-        for (let i = 0; i <= totalFrames; i++) {
-            const img = new Image();
-            const paddedIndex = String(i).padStart(5, '0');
-            img.src = `AnimationEntree/LOGO_MH_PourAnimation_${paddedIndex}.png`;
-            frames.push(img);
-        }
-
         window.addEventListener('DOMContentLoaded', () => {
-            // 1 seconde de pause initiale sur l'image 0
             setTimeout(() => {
-                let currentFrame = 0;
-                const intervalTime = 3000 / totalFrames; // Répartition sur 3 secondes
-
-                const animInterval = setInterval(() => {
-                    currentFrame++;
-                    if (currentFrame <= totalFrames) {
-                        imgElement.src = frames[currentFrame].src;
-                    } else {
-                        clearInterval(animInterval);
-
-                        // Déclenchement du fade out de 1 seconde vers le site
-                        splash.classList.add('fade-out');
-                        main.classList.add('visible');
-                    }
-                }, intervalTime);
-
-            }, 1000); // 1 seconde de délai initial
+                const splash = document.getElementById('splash');
+                const main = document.getElementById('main');
+                
+                splash.classList.add('fade-out');
+                main.classList.add('visible');
+            }, 1000); // 1 seconde de fond uni avant d'afficher le site en fondu
         });
     </script>
 </body>

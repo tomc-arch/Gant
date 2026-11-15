@@ -57,7 +57,7 @@
             width: auto;
             max-width: 90vw;
             background: transparent;
-            transform: translateZ(0); /* Force un calque GPU propre sur Chrome */
+            transform: translateZ(0); /* Force un calque GPU propre */
         }
 
         /* --- Barre de Navigation --- */
@@ -225,7 +225,7 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         </footer>
     </main>
 
-    <!-- Script de synchronisation Canvas avec pré-décodage complet -->
+    <!-- Script optimisé : Démarrage instantané sans attente globale -->
     <script>
         const totalFrames = 89; // De 00000 à 00089 (90 images au total)
         const animDuration = 3000; // 3 secondes d'animation
@@ -251,7 +251,7 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
                             return;
                         }
                     } catch (err) {
-                        // Fallback sur l'image standard si decode/ImageBitmap échoue
+                        // Fallback
                     }
                     resolve(img);
                 };
@@ -260,48 +260,52 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
             });
         }
 
-        function delay(ms) {
-            return new Promise((resolve) => setTimeout(resolve, ms));
-        }
-
         window.addEventListener('DOMContentLoaded', async () => {
-            // Étape 1 : Au moins 0,5 seconde de fond nu + préchargement & décodage complet des 90 frames
-            const framePromises = [];
-            for (let i = 0; i <= totalFrames; i++) {
-                framePromises.push(loadAndDecodeFrame(i));
-            }
+            const loadedFrames = new Array(totalFrames + 1).fill(null);
 
-            const [loadedFrames] = await Promise.all([
-                Promise.all(framePromises),
-                delay(500)
-            ]);
-
-            const firstValid = loadedFrames.find(Boolean);
-            if (!firstValid) {
-                // Sécurité : si les images ne chargent pas, on affiche directement le site
+            // Charger instantanément la première frame pour initialiser le canvas et démarrer sans délai
+            const firstFrame = await loadAndDecodeFrame(0);
+            if (!firstFrame) {
                 splash.classList.add('fade-out');
                 main.classList.add('visible');
                 return;
             }
 
-            // Dimensions natives du canvas pour une netteté parfaite
-            canvas.width = firstValid.width || firstValid.naturalWidth;
-            canvas.height = firstValid.height || firstValid.naturalHeight;
+            loadedFrames[0] = firstFrame;
+            canvas.width = firstFrame.width || firstFrame.naturalWidth;
+            canvas.height = firstFrame.height || firstFrame.naturalHeight;
 
-            // Étape 2 : Lancement de l'animation sur 3 secondes via requestAnimationFrame
+            // Lancer le rendu immédiatement
             const startTime = performance.now();
             let lastDrawnIndex = -1;
+
+            // Charger les frames restantes en arrière-plan pendant que l'animation joue
+            for (let i = 1; i <= totalFrames; i++) {
+                loadAndDecodeFrame(i).then(frame => {
+                    loadedFrames[i] = frame;
+                });
+            }
 
             function render(now) {
                 const elapsed = now - startTime;
                 const progress = Math.min(elapsed / animDuration, 1);
                 const frameIndex = Math.min(
-                    Math.floor(progress * loadedFrames.length),
+                    Math.floor(progress * (totalFrames + 1)),
                     totalFrames
                 );
 
                 if (frameIndex !== lastDrawnIndex) {
-                    const frame = loadedFrames[frameIndex];
+                    // Chercher la frame chargée, ou retomber sur la plus proche précédente si pas encore dispo
+                    let frame = loadedFrames[frameIndex];
+                    if (!frame) {
+                        for (let j = frameIndex; j >= 0; j--) {
+                            if (loadedFrames[j]) {
+                                frame = loadedFrames[j];
+                                break;
+                            }
+                        }
+                    }
+
                     if (frame) {
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                         ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
@@ -312,16 +316,15 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
                 if (progress < 1) {
                     requestAnimationFrame(render);
                 } else {
-                    // S'assurer que la dernière image est bien dessinée
-                    const lastFrame = loadedFrames[totalFrames];
-                    if (lastFrame && lastDrawnIndex !== totalFrames) {
+                    // S'assurer que la dernière image est affichée
+                    const lastFrame = loadedFrames[totalFrames] || loadedFrames[lastDrawnIndex];
+                    if (lastFrame) {
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                         ctx.drawImage(lastFrame, 0, 0, canvas.width, canvas.height);
                     }
 
-                    // Étape 3 : 0,5 seconde sur la dernière image de l'animation
+                    // Petite pause de 0,5s sur la dernière image avant le fade out
                     setTimeout(() => {
-                        // Étape 4 : Fade out de 1 seconde vers le site principal
                         splash.classList.add('fade-out');
                         main.classList.add('visible');
                     }, 500);

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marchais Honoré</title>
-    <!-- Import Google Fonts : Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -44,18 +43,18 @@
         }
 
         .anim-container {
-            width: 100vw;
-            height: 20vh; /* L'animation prend exactement 20% de la hauteur verticale */
+            height: 20vh; /* L'animation prend 20% de la hauteur de l'écran */
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
         }
 
         #splash-anim {
             height: 100%;
             width: auto;
             object-fit: contain;
+            /* La magie CSS : efface le fond noir de l'image pour l'isoler parfaitement sur le #0d0c1a */
+            mix-blend-mode: screen; 
         }
 
         /* --- Barre de Navigation --- */
@@ -130,7 +129,7 @@
             font-weight: 300;
             font-size: 1.05rem;
             line-height: 1.8;
-            color: #2a252a; /* Gris foncé */
+            color: #2a252a;
             white-space: pre-line;
         }
 
@@ -181,14 +180,14 @@
 </head>
 <body>
 
-    <!-- Rideau d'accueil -->
+    <!-- Rideau d'accueil : 1s de pause, 3s d'animation, 1s de fade-out -->
     <div id="splash">
         <div class="anim-container">
             <img id="splash-anim" src="AnimationEntree/LOGO_MH_PourAnimation_00000.png" alt="Animation Marchais Honoré">
         </div>
     </div>
 
-    <!-- Barre de Navigation (Logo en haut, menus centrés en dessous) -->
+    <!-- Barre de Navigation -->
     <nav>
         <div class="nav-logo">
             <img src="images/MH_icone.png" alt="Marchais Honoré">
@@ -222,14 +221,14 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         </footer>
     </main>
 
-    <!-- Script de gestion de la timeline : 1s vide -> 3s animation -> 1s fade-out -->
+    <!-- Script de synchronisation -->
     <script>
         const totalFrames = 90;
         const imgElement = document.getElementById('splash-anim');
         const splash = document.getElementById('splash');
         const main = document.getElementById('main');
 
-        // Préchargement des 91 images pour garantir une fluidité totale
+        // Préchargement des 91 images
         const frames = [];
         for (let i = 0; i <= totalFrames; i++) {
             const img = new Image();
@@ -239,11 +238,10 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Étape 1 : 1 seconde de pause (rien ne bouge, fond #0d0c1a uni avec l'image 0)
+            // 1 seconde de pause initiale sur l'image 0
             setTimeout(() => {
-                // Étape 2 : Lancement de l'animation sur 3 secondes (3000ms répartis sur 90 frames)
                 let currentFrame = 0;
-                const intervalTime = 3000 / totalFrames; // ~33.3ms par frame
+                const intervalTime = 3000 / totalFrames; // Répartition sur 3 secondes
 
                 const animInterval = setInterval(() => {
                     currentFrame++;
@@ -252,13 +250,13 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
                     } else {
                         clearInterval(animInterval);
 
-                        // Étape 3 : Fin de l'animation, déclenchement du fade-out de 1 seconde
+                        // Déclenchement du fade out de 1 seconde vers le site
                         splash.classList.add('fade-out');
                         main.classList.add('visible');
                     }
                 }, intervalTime);
 
-            }, 1000); // 1000ms = 1 seconde d'attente initiale
+            }, 1000); // 1 seconde de délai initial
         });
     </script>
 </body>

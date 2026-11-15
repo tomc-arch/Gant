@@ -41,6 +41,7 @@
         #splash.fade-out {
             opacity: 0;
             visibility: hidden;
+            pointer-events: none;
         }
 
         .anim-container {
@@ -50,10 +51,13 @@
             justify-content: center;
         }
 
-        #splash-anim {
+        #splash-canvas {
+            display: block;
             height: 100%;
             width: auto;
-            object-fit: contain;
+            max-width: 90vw;
+            background: transparent;
+            transform: translateZ(0); /* Force un calque GPU propre sur Chrome */
         }
 
         /* --- Barre de Navigation --- */
@@ -183,7 +187,7 @@
     <!-- Rideau d'accueil -->
     <div id="splash">
         <div class="anim-container">
-            <img id="splash-anim" src="AnimationEntree/LOGO_MH_PourAnimation_00000.png" alt="Animation Marchais Honoré">
+            <canvas id="splash-canvas" aria-label="Animation Marchais Honoré"></canvas>
         </div>
     </div>
 
@@ -221,46 +225,110 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         </footer>
     </main>
 
-    <!-- Script de synchronisation avec préchargement et nouvelle chronologie -->
+    <!-- Script de synchronisation Canvas avec pré-décodage complet -->
     <script>
         const totalFrames = 89; // De 00000 à 00089 (90 images au total)
-        const imgElement = document.getElementById('splash-anim');
+        const animDuration = 3000; // 3 secondes d'animation
+        const canvas = document.getElementById('splash-canvas');
+        const ctx = canvas.getContext('2d', { alpha: true });
         const splash = document.getElementById('splash');
         const main = document.getElementById('main');
 
-        // Préchargement silencieux de toutes les images en arrière-plan
-        const frames = [];
-        for (let i = 0; i <= totalFrames; i++) {
-            const img = new Image();
-            const paddedIndex = String(i).padStart(5, '0');
-            img.src = `AnimationEntree/LOGO_MH_PourAnimation_${paddedIndex}.png`;
-            frames.push(img);
+        function loadAndDecodeFrame(index) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                const paddedIndex = String(index).padStart(5, '0');
+                img.src = `AnimationEntree/LOGO_MH_PourAnimation_${paddedIndex}.png`;
+
+                img.onload = async () => {
+                    try {
+                        if (img.decode) {
+                            await img.decode();
+                        }
+                        if (window.createImageBitmap) {
+                            const bitmap = await createImageBitmap(img);
+                            resolve(bitmap);
+                            return;
+                        }
+                    } catch (err) {
+                        // Fallback sur l'image standard si decode/ImageBitmap échoue
+                    }
+                    resolve(img);
+                };
+
+                img.onerror = () => resolve(null);
+            });
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            // Étape 1 : 0,5 seconde de fond nu (chargement en back)
-            setTimeout(() => {
-                // Étape 2 : Lancement de l'animation sur 3 secondes (90 images)
-                let currentFrame = 0;
-                const intervalTime = 3000 / (totalFrames + 1); // ~33.33ms par frame
+        function delay(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
 
-                const animInterval = setInterval(() => {
-                    currentFrame++;
-                    if (currentFrame <= totalFrames) {
-                        imgElement.src = frames[currentFrame].src;
-                    } else {
-                        clearInterval(animInterval);
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Étape 1 : Au moins 0,5 seconde de fond nu + préchargement & décodage complet des 90 frames
+            const framePromises = [];
+            for (let i = 0; i <= totalFrames; i++) {
+                framePromises.push(loadAndDecodeFrame(i));
+            }
 
-                        // Étape 3 : 0,5 seconde sur la dernière image de l'animation
-                        setTimeout(() => {
-                            // Étape 4 : Fade out de 1 seconde vers le site principal
-                            splash.classList.add('fade-out');
-                            main.classList.add('visible');
-                        }, 500); // 500ms de pause sur la dernière image
+            const [loadedFrames] = await Promise.all([
+                Promise.all(framePromises),
+                delay(500)
+            ]);
+
+            const firstValid = loadedFrames.find(Boolean);
+            if (!firstValid) {
+                // Sécurité : si les images ne chargent pas, on affiche directement le site
+                splash.classList.add('fade-out');
+                main.classList.add('visible');
+                return;
+            }
+
+            // Dimensions natives du canvas pour une netteté parfaite
+            canvas.width = firstValid.width || firstValid.naturalWidth;
+            canvas.height = firstValid.height || firstValid.naturalHeight;
+
+            // Étape 2 : Lancement de l'animation sur 3 secondes via requestAnimationFrame
+            const startTime = performance.now();
+            let lastDrawnIndex = -1;
+
+            function render(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / animDuration, 1);
+                const frameIndex = Math.min(
+                    Math.floor(progress * loadedFrames.length),
+                    totalFrames
+                );
+
+                if (frameIndex !== lastDrawnIndex) {
+                    const frame = loadedFrames[frameIndex];
+                    if (frame) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
                     }
-                }, intervalTime);
+                    lastDrawnIndex = frameIndex;
+                }
 
-            }, 500); // 500ms (0,5s) de fond nu initial
+                if (progress < 1) {
+                    requestAnimationFrame(render);
+                } else {
+                    // S'assurer que la dernière image est bien dessinée
+                    const lastFrame = loadedFrames[totalFrames];
+                    if (lastFrame && lastDrawnIndex !== totalFrames) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(lastFrame, 0, 0, canvas.width, canvas.height);
+                    }
+
+                    // Étape 3 : 0,5 seconde sur la dernière image de l'animation
+                    setTimeout(() => {
+                        // Étape 4 : Fade out de 1 seconde vers le site principal
+                        splash.classList.add('fade-out');
+                        main.classList.add('visible');
+                    }, 500);
+                }
+            }
+
+            requestAnimationFrame(render);
         });
     </script>
 </body>

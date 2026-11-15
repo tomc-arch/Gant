@@ -43,8 +43,17 @@
             visibility: hidden;
         }
 
-        #splash img {
-            height: 20vh; /* 20% de la hauteur de l'écran */
+        .anim-container {
+            width: 100vw;
+            height: 20vh; /* L'animation prend exactement 20% de la hauteur verticale */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #splash-anim {
+            height: 100%;
             width: auto;
             object-fit: contain;
         }
@@ -174,10 +183,12 @@
 
     <!-- Rideau d'accueil -->
     <div id="splash">
-        <img id="splash-anim" src="AnimationEntree/LOGO_MH_PourAnimation_00000.png" alt="Animation Marchais Honoré">
+        <div class="anim-container">
+            <img id="splash-anim" src="AnimationEntree/LOGO_MH_PourAnimation_00000.png" alt="Animation Marchais Honoré">
+        </div>
     </div>
 
-    <!-- Barre de Navigation -->
+    <!-- Barre de Navigation (Logo en haut, menus centrés en dessous) -->
     <nav>
         <div class="nav-logo">
             <img src="images/MH_icone.png" alt="Marchais Honoré">
@@ -211,14 +222,14 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         </footer>
     </main>
 
-    <!-- Script d'animation minimaliste -->
+    <!-- Script de gestion de la timeline : 1s vide -> 3s animation -> 1s fade-out -->
     <script>
         const totalFrames = 90;
         const imgElement = document.getElementById('splash-anim');
         const splash = document.getElementById('splash');
         const main = document.getElementById('main');
 
-        // Préchargement des 91 images pour garantir la fluidité
+        // Préchargement des 91 images pour garantir une fluidité totale
         const frames = [];
         for (let i = 0; i <= totalFrames; i++) {
             const img = new Image();
@@ -228,23 +239,26 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            let currentFrame = 0;
-            const intervalTime = 3000 / totalFrames; // Répartition exacte sur 3 secondes
-
-            const animInterval = setInterval(() => {
-                currentFrame++;
-                if (currentFrame <= totalFrames) {
-                    imgElement.src = frames[currentFrame].src;
-                } else {
-                    clearInterval(animInterval);
-                }
-            }, intervalTime);
-
-            // Après exactement 3 secondes, déclenchement du fade out global de 1 seconde
+            // Étape 1 : 1 seconde de pause (rien ne bouge, fond #0d0c1a uni avec l'image 0)
             setTimeout(() => {
-                splash.classList.add('fade-out');
-                main.classList.add('visible');
-            }, 3000);
+                // Étape 2 : Lancement de l'animation sur 3 secondes (3000ms répartis sur 90 frames)
+                let currentFrame = 0;
+                const intervalTime = 3000 / totalFrames; // ~33.3ms par frame
+
+                const animInterval = setInterval(() => {
+                    currentFrame++;
+                    if (currentFrame <= totalFrames) {
+                        imgElement.src = frames[currentFrame].src;
+                    } else {
+                        clearInterval(animInterval);
+
+                        // Étape 3 : Fin de l'animation, déclenchement du fade-out de 1 seconde
+                        splash.classList.add('fade-out');
+                        main.classList.add('visible');
+                    }
+                }, intervalTime);
+
+            }, 1000); // 1000ms = 1 seconde d'attente initiale
         });
     </script>
 </body>

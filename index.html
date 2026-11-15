@@ -23,13 +23,16 @@
             overflow-x: hidden;
         }
 
-        /* --- Écran d'accueil épuré (Fond uni uniforme) --- */
+        /* --- Écran d'accueil (Splash Screen) --- */
         #splash {
             position: fixed;
             inset: 0;
             width: 100vw;
             height: 100dvh;
-            background-color: #0d0c1a; /* Fond sombre demandé */
+            background-color: #0d0c1a; /* Fond sombre uniforme */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 999;
             opacity: 1;
             transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
@@ -38,6 +41,19 @@
         #splash.fade-out {
             opacity: 0;
             visibility: hidden;
+        }
+
+        .anim-container {
+            height: 20vh; /* L'animation prend environ 20% de la hauteur verticale */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #splash-anim {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
         }
 
         /* --- Barre de Navigation --- */
@@ -61,6 +77,7 @@
         .nav-logo img {
             height: 32px;
             width: auto;
+            display: block;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
         }
 
@@ -163,10 +180,14 @@
 </head>
 <body>
 
-    <!-- Rideau d'accueil épuré (Fond uni #0d0c1a) -->
-    <div id="splash"></div>
+    <!-- Rideau d'accueil -->
+    <div id="splash">
+        <div class="anim-container">
+            <img id="splash-anim" src="AnimationEntree/LOGO_MH_PourAnimation_00000.png" alt="Animation Marchais Honoré">
+        </div>
+    </div>
 
-    <!-- Barre de Navigation (Logo centré, menus centrés en dessous) -->
+    <!-- Barre de Navigation -->
     <nav>
         <div class="nav-logo">
             <img src="images/MH_icone.png" alt="Marchais Honoré">
@@ -200,16 +221,46 @@ Nous faisons sécession. Nous rendons au cuir sa souveraineté et remettons la m
         </footer>
     </main>
 
-    <!-- Script de transition épuré (1 seconde de splash puis fade-out) -->
+    <!-- Script de synchronisation avec préchargement et nouvelle chronologie -->
     <script>
+        const totalFrames = 89; // De 00000 à 00089 (90 images au total)
+        const imgElement = document.getElementById('splash-anim');
+        const splash = document.getElementById('splash');
+        const main = document.getElementById('main');
+
+        // Préchargement silencieux de toutes les images en arrière-plan
+        const frames = [];
+        for (let i = 0; i <= totalFrames; i++) {
+            const img = new Image();
+            const paddedIndex = String(i).padStart(5, '0');
+            img.src = `AnimationEntree/LOGO_MH_PourAnimation_${paddedIndex}.png`;
+            frames.push(img);
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
+            // Étape 1 : 0,5 seconde de fond nu (chargement en back)
             setTimeout(() => {
-                const splash = document.getElementById('splash');
-                const main = document.getElementById('main');
-                
-                splash.classList.add('fade-out');
-                main.classList.add('visible');
-            }, 1000); // 1 seconde de fond uni avant d'afficher le site en fondu
+                // Étape 2 : Lancement de l'animation sur 3 secondes (90 images)
+                let currentFrame = 0;
+                const intervalTime = 3000 / (totalFrames + 1); // ~33.33ms par frame
+
+                const animInterval = setInterval(() => {
+                    currentFrame++;
+                    if (currentFrame <= totalFrames) {
+                        imgElement.src = frames[currentFrame].src;
+                    } else {
+                        clearInterval(animInterval);
+
+                        // Étape 3 : 0,5 seconde sur la dernière image de l'animation
+                        setTimeout(() => {
+                            // Étape 4 : Fade out de 1 seconde vers le site principal
+                            splash.classList.add('fade-out');
+                            main.classList.add('visible');
+                        }, 500); // 500ms de pause sur la dernière image
+                    }
+                }, intervalTime);
+
+            }, 500); // 500ms (0,5s) de fond nu initial
         });
     </script>
 </body>

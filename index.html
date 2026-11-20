@@ -183,8 +183,9 @@ main .slot{position:absolute;inset:0;display:grid}
     <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav"><i></i><i></i><i></i></button>
     <ul class="nav" id="nav">
       <li class="has-sub"><a href="index.html" aria-current="page">Marchais-Honoré</a><ul class="sub"><li><a href="savoir-faire.html">Savoir-faire de 1563</a></li><li><a href="manifeste.html">Manifeste</a></li></ul></li>
-      <li class="has-sub"><a href="gants.html">Gants</a><ul class="sub"><li><a href="strazzeri.html">Strazzeri</a></li><li><a href="jouvin.html">Jouvin</a></li><li><a href="terray.html">Terray</a></li><li><a href="reynier.html">Reynier</a></li></ul></li>
-      <li><a href="archives.html">Nos archives</a></li>
+      <li class="has-sub"><a href="femmes-strazzeri.html">Femmes</a><ul class="sub"><li><a href="femmes-strazzeri.html">Strazzeri</a></li><li><a href="femmes-jouvin.html">Jouvin</a></li><li><a href="femmes-terray.html">Terray</a></li><li><a href="femmes-reynier.html">Reynier</a></li><li><a href="femmes-nuit.html">Gants de nuit</a></li></ul></li>
+      <li class="has-sub"><a href="hommes-strazzeri.html">Hommes</a><ul class="sub"><li><a href="hommes-strazzeri.html">Strazzeri</a></li><li><a href="hommes-jouvin.html">Jouvin</a></li><li><a href="hommes-terray.html">Terray</a></li><li><a href="hommes-reynier.html">Reynier</a></li><li><a href="hommes-nuit.html">Gants de nuit</a></li></ul></li>
+      <li><a href="archives.html">Académie du gant</a></li>
     </ul>
     <a class="brand" href="index.html" aria-label="Marchais-Honoré, accueil"><svg id="logo" viewBox="1045 846 400 52" role="img" aria-label="Marchais Honoré">
 <clipPath id="m"><rect x="1040" y="835" width="420" height="70"/></clipPath>
@@ -275,7 +276,7 @@ main .slot{position:absolute;inset:0;display:grid}
 (function(){
   var b=document.body,curtain=document.getElementById('curtain'),sp=document.getElementById('splash'),nl=document.getElementById('nl'),nbn=document.getElementById('nb'),hdr=document.querySelector('header');
   function done(){b.classList.remove('intro')}
-  function showNl(ms){var c=false;try{c=sessionStorage.getItem('mhn')==='1'||localStorage.getItem('mhs')==='1'}catch(e){}if(c){nbn.hidden=true;nl.hidden=true;return}setTimeout(function(){nbn.classList.add('show')},ms)}
+  function showNl(ms){if(location.hash.indexOf('newsletter')>=0){try{localStorage.removeItem('mhs');sessionStorage.removeItem('mhn')}catch(e){}}var c=false;try{c=sessionStorage.getItem('mhn')==='1'||localStorage.getItem('mhs')==='1'}catch(e){}if(c){nbn.hidden=true;nl.hidden=true;return}setTimeout(function(){nbn.classList.add('show')},ms)}
   var seen=false;try{seen=sessionStorage.getItem('mh')==='1'}catch(e){}
   var reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
   if(reduced||(seen&&location.hash.indexOf('rejouer')<0)){curtain.remove();sp.remove();done();showNl(1200)}

@@ -93,26 +93,73 @@ html.seen .lt,html.seen .sh{animation:none;opacity:1;transform:none}
 main{position:fixed;left:0;right:0;top:var(--hh);bottom:var(--fh)}
 main .slot{position:absolute;inset:0;display:grid}
 
-/* lettre d'information */
-.nl{position:fixed;left:0;right:0;bottom:var(--fh);z-index:40;background:var(--bg);color:var(--nuit);min-height:21vh;padding:2.2rem 1rem 1.6rem;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--sans);font-size:var(--nav);font-weight:300;
-  transform:translateY(calc(105% + var(--fh)));transition:transform .9s cubic-bezier(.22,1,.36,1)}
-.nl.show{transform:none}
+/* lettre d'information : carte centrée, 7 états (cotes issues de la maquette, 1 u = 1 px à 425 px de large) */
+.nl{--cw:min(max(300px,25vw),520px,calc((100vh - var(--hh) - var(--fh) - 24px)*425/584));--u:calc(var(--cw)/425);
+  position:fixed;z-index:40;left:50%;top:calc(var(--hh) + (100vh - var(--hh) - var(--fh))/2);width:var(--cw);height:calc(var(--cw)*584/425);
+  background:var(--bg);color:var(--nuit);font-family:var(--sans);font-weight:300;letter-spacing:0;
+  transform:translate(-50%,-47%);opacity:0;pointer-events:none;transition:opacity .9s ease,transform 1s cubic-bezier(.22,1,.36,1)}
+@supports (height:100dvh){.nl{--cw:min(max(300px,25vw),520px,calc((100dvh - var(--hh) - var(--fh) - 24px)*425/584));top:calc(var(--hh) + (100dvh - var(--hh) - var(--fh))/2)}}
+@media (max-width:760px){.nl{--cw:min(90vw,400px,calc((100vh - var(--hh) - var(--fh) - 24px)*425/584))}}
+@supports (height:100dvh){@media (max-width:760px){.nl{--cw:min(90vw,400px,calc((100dvh - var(--hh) - var(--fh) - 24px)*425/584))}}}
+.nl.show{opacity:1;transform:translate(-50%,-50%);pointer-events:auto}
 .nl[hidden]{display:none}
-.nl h2{font:300 var(--nav)/1.2 var(--sans);margin-bottom:1.5rem;letter-spacing:.025em}
-.nl form{width:clamp(250px,18.4vw,420px)}
-.nl .fld{display:block;width:100%;border:0;border-bottom:1px solid #9a9a9a;background:transparent;outline:0;padding:.25rem 0 .55rem;font:300 var(--nav) var(--sans);color:var(--nuit);border-radius:0}
-.nl .fld::placeholder{color:#8f8f8f}
-.nl .fld:focus{border-bottom-color:var(--nuit)}
-.nl .go{display:block;width:100%;margin-top:1.15rem;height:clamp(28px,2.1vw,40px);background:var(--nuit);color:#fff;border:0;font:300 var(--nav) var(--sans);letter-spacing:.03em;cursor:pointer}
-.nl .go:hover{opacity:.88}
-.nl .chk{display:flex;align-items:center;gap:.7em;justify-content:center;margin:1.15rem -3rem 0;white-space:nowrap;font-size:var(--nav);color:var(--nuit)}
-.nl .chk input{width:12px;height:12px;accent-color:#0d0c1a;margin:0}
-.nl .msg{min-height:1.3em;margin-top:.7rem;text-align:center;color:var(--nuit)}
-.nl .x{position:absolute;right:var(--pad);top:1.1rem;background:none;border:0;cursor:pointer;width:22px;height:22px;color:var(--nuit)}
+.nl *{box-sizing:border-box}
+.nl button,.nl input,.nl select{font-family:var(--sans);color:var(--nuit);-webkit-appearance:none;appearance:none;border-radius:0}
+.nl .x{position:absolute;right:0;top:-34px;width:22px;height:22px;background:none;border:0;cursor:pointer;color:#fff;padding:0}
 .nl .x::before,.nl .x::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:1px;background:currentColor;transform:translate(-50%,-50%) rotate(45deg)}
 .nl .x::after{transform:translate(-50%,-50%) rotate(-45deg)}
-@media (max-width:760px){.nl{padding-top:2.6rem}.nl form{width:min(86vw,360px)}}
+.nl .t{position:absolute;left:calc(26*var(--u));top:calc(27*var(--u));margin:0;font:400 calc(14.5*var(--u))/calc(16*var(--u)) var(--sans);transition:opacity .35s ease}
+.nl .t.sw{opacity:0}
+.nl .mk{position:absolute;right:calc(24*var(--u));top:calc(19*var(--u));width:calc(64*var(--u));opacity:0;transition:opacity .8s ease .2s;pointer-events:none}
+.nl .mk svg{display:block;width:100%;height:auto;fill:#212c59;overflow:visible}
+.nl.s2 .mk,.nl.s3 .mk{opacity:1}
+.nl .em,.nl .fl{position:absolute}
+.nl .em{left:calc(26*var(--u));right:calc(26*var(--u));top:calc(280*var(--u));height:calc(28*var(--u));transition:top .8s cubic-bezier(.22,1,.36,1)}
+.nl.s2 .em,.nl.s3 .em{top:calc(154*var(--u))}
+.nl .em input,.nl .fl input,.nl .fl select{display:block;width:100%;height:calc(28*var(--u));border:0;border-bottom:1px solid #d9d8d9;background:transparent;outline:0;padding:0;font:300 calc(18*var(--u))/calc(28*var(--u)) var(--sans);letter-spacing:-.01em;color:var(--nuit);transition:border-color .3s}
+.nl .em input{padding-right:calc(26*var(--u))}
+.nl .em input::placeholder,.nl .fl input::placeholder{color:#adafb2;opacity:1}
+.nl .em input:focus,.nl .fl input:focus,.nl .fl select:focus{border-bottom-color:#8a8a8f}
+.nl .lab{position:absolute;left:0;top:-9u;font-size:calc(8*var(--u));line-height:calc(9*var(--u));color:#9a9a9a;opacity:0;transition:opacity .3s;pointer-events:none}
+.nl .em:focus-within:not(.has) .lab,.nl .fl.has .lab{opacity:1}
+.nl .em:focus-within input::placeholder,.nl .fl:focus-within input::placeholder{color:transparent}
+.nl .ck{position:absolute;right:0;bottom:calc(7*var(--u));width:calc(16*var(--u));height:calc(16*var(--u));border-radius:50%;background:#212c59;opacity:0;transform:scale(.6);transition:opacity .35s,transform .45s cubic-bezier(.22,1,.36,1);pointer-events:none}
+.nl .ck svg{position:absolute;inset:0;width:100%;height:100%}
+.nl .em.ok .ck{opacity:1;transform:none}
+.nl .tg{position:absolute;left:calc(26*var(--u));right:calc(26*var(--u));top:calc(225*var(--u));height:calc(20*var(--u));display:flex;align-items:center;justify-content:space-between;background:none;border:0;padding:0;cursor:pointer;font:400 calc(14*var(--u))/calc(20*var(--u)) var(--sans);text-align:left;opacity:0;pointer-events:none;transition:opacity .8s ease .35s}
+.nl.s2 .tg,.nl.s3 .tg{opacity:1;pointer-events:auto}
+.nl .chv{width:calc(7*var(--u));height:calc(10*var(--u));color:#b0b0b0;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.nl.s3 .chv{transform:rotate(90deg)}
+.nl .pf{opacity:0;pointer-events:none;transition:opacity .6s ease}
+.nl.s3 .pf{opacity:1;pointer-events:auto}
+.nl .seg{position:absolute;left:calc(26*var(--u));right:calc(26*var(--u));top:calc(268*var(--u));height:calc(32*var(--u));display:flex;border:1px solid #a8a8a8}
+.nl .seg button{flex:1;background:none;border:0;padding:0;cursor:pointer;font:300 calc(18*var(--u))/calc(30*var(--u)) var(--sans);color:#b4b4b4;transition:color .25s}
+.nl .seg button[aria-checked=true]{color:var(--nuit);font-weight:500}
+.nl .fl{width:calc(170*var(--u))}
+.nl .fa{left:calc(26*var(--u))}.nl .fb{left:calc(231*var(--u))}
+.nl .r1{top:calc(352*var(--u))}.nl .r2{top:calc(430*var(--u))}
+.nl .fa input,.nl .fb input{font-weight:500;color:#212c59}
+.nl .fl select{padding-right:calc(14*var(--u));cursor:pointer;color:#adafb2;text-overflow:ellipsis}
+.nl .fl select.v{color:var(--nuit)}
+.nl .fl select option{color:var(--nuit);font-size:14px}
+.nl .fl .chv{position:absolute;right:calc(3*var(--u));bottom:calc(9*var(--u));pointer-events:none}
+.nl .go{position:absolute;right:calc(26*var(--u));bottom:calc(17*var(--u));width:calc(154*var(--u));height:calc(32*var(--u));padding:0;background:transparent;border:1px solid #1a1a1a;font:300 calc(10*var(--u))/calc(30*var(--u)) var(--sans);letter-spacing:.01em;cursor:pointer;transition:background .35s,color .35s,border-color .35s,opacity .5s}
+.nl .go.on{background:#212c59;border-color:#212c59;color:#fff}
+.nl .go:disabled{cursor:default}
+.nl.s2 .go{opacity:0;pointer-events:none}
+.nl .nt{position:absolute;left:calc(26*var(--u));bottom:calc(17*var(--u));width:calc(190*var(--u));margin:0;font-size:max(calc(9*var(--u)),9.5px);line-height:max(calc(11*var(--u)),11.5px);color:#8f8f8f}
+.nl .nt a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.nl .nt.er{color:var(--nuit)}
+.nl.s2 .nt.n1{opacity:0}
+.nl .nt.n2{opacity:0;pointer-events:none}
+.nl.s3 .nt.n1{opacity:0;pointer-events:none}
+.nl.s3 .nt.n2{opacity:1;pointer-events:auto}
+.nl .fin{position:absolute;left:calc(26*var(--u));right:calc(26*var(--u));top:50%;transform:translateY(-50%);display:flex;align-items:center;justify-content:space-between;gap:calc(24*var(--u));opacity:0;pointer-events:none;font-size:calc(14*var(--u));line-height:calc(17*var(--u))}
+.nl .fin p{margin:0;max-width:calc(215*var(--u))}
+.nl .fin .mk2{width:calc(64*var(--u));flex:none}
+.nl .fin .mk2 svg{display:block;width:100%;height:auto;fill:#212c59;overflow:visible}
+.nl.s4 .fin{opacity:1;transition:opacity 1s ease .5s}
+.nl.s4 .t,.nl.s4 .mk,.nl.s4 .em,.nl.s4 .tg,.nl.s4 .pf,.nl.s4 .go,.nl.s4 .nt{opacity:0;pointer-events:none;transition:opacity .5s ease}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Marchais-Honoré","alternateName":["Marchais Honoré"],"url":"https://xn--marchais-honor-okb.com/"}</script>
 </head>
@@ -139,16 +186,34 @@ main .slot{position:absolute;inset:0;display:grid}
     <div class="slot dark " data-slot="accueil_hero" style=""><span class="slot-label">accueil_hero</span></div>
   </main>
   <aside class="nl" id="nl" aria-label="Lettre d’information">
-    <button class="x" id="nlx" aria-label="Fermer"></button>
-    <h2>Inscrivez-vous à notre lettre d’information</h2>
-    <form id="nlf" novalidate>
-      <label class="sr" for="nle" style="position:absolute;left:-9999px">Adresse e-mail</label>
-      <input class="fld" id="nle" type="email" name="email" placeholder="Votre adresse e-mail" autocomplete="email" required>
+    <button class="x" id="nlx" type="button" aria-label="Fermer"></button>
+    <p class="t" id="nlt">Restez informé</p>
+    <div class="mk" aria-hidden="true"><svg class="icon-mh" viewBox="1160 645 165 150" role="img" aria-label="MH"><path d="M1212.8,663.98c-.6,4.46-1.28,8.85.2,13.24-3.3-2.37-7.36-3.18-11.31-3.8-.81-3.15-1.45-6.34-2.39-9.46-.82-2.71-1.88-5.33-2.81-8,5.06,3.37,10.69,5.74,16.31,8.02Z"/><path d="M1288.15,654.88c-2.61,5.42-4.06,11.26-5.8,17-4.64.4-9.43,1.25-13.44,3.72.81-4.19.18-8.37-.53-12.52,4.49-1.23,8.9-2.79,13.12-4.76,2.26-1.06,4.4-2.34,6.65-3.43Z"/><path d="M1315.37,736.64c-7.05-.03-13.89,1.94-20.76,3.26l-.2-.16c-1.42-4.06-4.01-7.81-6.99-10.9,1.93-.28,3.81-.83,5.62-1.55,2.24-.88,4.82-2.16,6.63-3.72,4.54,5.13,10.12,9.17,15.7,13.08Z"/><path d="M1242.41,762.81c1.13,3.15,3.7,5.42,5.81,7.9-2.31,4.9-4.28,9.95-5.72,15.18-.4.08-.23-.17-.32-.4-.67-1.74-1.2-3.39-1.98-5.12-1.32-2.93-3-5.71-4.46-8.57,2.03-2.12,4.04-4.41,5.49-6.99.32-.57.5-1.27.77-1.77.11-.21,0-.31.4-.23Z"/><path d="M1196.49,730.29c-3.23,2.88-5.23,6.48-7.02,10.37-6.81-1.51-13.76-2.35-20.75-2.19,2.4-1.65,4.71-3.42,6.9-5.36,2.57-2.27,4.89-4.82,7.39-7.16,4.25,2.04,8.61,4.41,13.48,4.34Z"/><text x="1242" y="738" text-anchor="middle" font-family="Charter,'Iowan Old Style',Georgia,serif" font-size="46" font-weight="300">MH</text></svg></div>
+    <form id="nlf" novalidate autocomplete="off">
       <input type="text" id="nlw" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0">
-      <button class="go" type="submit">S’inscrire</button>
-      <label class="chk"><input type="checkbox" id="nlc" required><span>J’ai lu et compris la <a href="confidentialite.html" id="nlp" target="_blank" rel="noopener">politique de confidentialité</a></span></label>
-      <p class="msg" id="nlm" role="status" aria-live="polite"></p>
+      <div class="em" id="nlem">
+        <span class="lab">email</span>
+        <input id="nle" type="email" name="email" placeholder="votre adresse email" aria-label="Adresse e-mail" autocomplete="email" inputmode="email" required>
+        <span class="ck" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.6 8.3l2.2 2.2 4.6-4.6" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <button class="tg" id="nltg" type="button" aria-expanded="false" aria-controls="nlpf"><span>Créer un compte</span><svg class="chv" viewBox="0 0 7 10" aria-hidden="true"><path d="M1.2 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="pf" id="nlpf">
+        <div class="seg" id="nlseg" role="radiogroup" aria-label="Civilité">
+          <button type="button" role="radio" aria-checked="false" data-v="Madame">Mme.</button>
+          <button type="button" role="radio" aria-checked="false" data-v="Monsieur">Mr.</button>
+          <button type="button" role="radio" aria-checked="false" data-v="Sans civilité" aria-label="Sans civilité">Ø</button>
+        </div>
+        <div class="fl fa r1"><span class="lab">prénom</span><input id="nlp1" type="text" placeholder="Prénom" aria-label="Prénom" autocomplete="given-name" maxlength="60" tabindex="-1"></div>
+        <div class="fl fb r1"><span class="lab">nom</span><input id="nlp2" type="text" placeholder="Nom" aria-label="Nom" autocomplete="family-name" maxlength="60" tabindex="-1"></div>
+        <div class="fl fa r2"><input id="nlbd" type="text" inputmode="numeric" placeholder="Jour d’anniversaire" aria-label="Jour d’anniversaire (jour et mois, JJ/MM)" maxlength="5" tabindex="-1"></div>
+        <div class="fl fb r2"><select id="nlsz" aria-label="Taille de gant" tabindex="-1"><option value="" selected>taille de gant</option><option>taille 6</option><option>taille 6½</option><option>taille 7</option><option>taille 7½</option><option>taille 8</option><option>taille 8½</option><option>taille 9</option><option>taille 9½</option><option>taille 10</option></select><svg class="chv" viewBox="0 0 7 10" aria-hidden="true"><path d="M1.2 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+      <p class="nt n1" id="nlnt">En vous inscrivant, vous acceptez de recevoir nos communications. <a href="confidentialite.html" target="_blank" rel="noopener">Politique de confidentialité</a></p>
+      <p class="nt n2" id="nlnt2">Facultatif. Ces informations servent uniquement à personnaliser nos messages.</p>
+      <p class="nt er" id="nlm" role="status" aria-live="polite" hidden></p>
+      <button class="go" id="nlgo" type="submit">m’inscrire</button>
     </form>
+    <div class="fin" aria-live="polite"><p id="nlfin"></p><div class="mk2" aria-hidden="true"><svg class="icon-mh" viewBox="1160 645 165 150" role="img" aria-label="MH"><path d="M1212.8,663.98c-.6,4.46-1.28,8.85.2,13.24-3.3-2.37-7.36-3.18-11.31-3.8-.81-3.15-1.45-6.34-2.39-9.46-.82-2.71-1.88-5.33-2.81-8,5.06,3.37,10.69,5.74,16.31,8.02Z"/><path d="M1288.15,654.88c-2.61,5.42-4.06,11.26-5.8,17-4.64.4-9.43,1.25-13.44,3.72.81-4.19.18-8.37-.53-12.52,4.49-1.23,8.9-2.79,13.12-4.76,2.26-1.06,4.4-2.34,6.65-3.43Z"/><path d="M1315.37,736.64c-7.05-.03-13.89,1.94-20.76,3.26l-.2-.16c-1.42-4.06-4.01-7.81-6.99-10.9,1.93-.28,3.81-.83,5.62-1.55,2.24-.88,4.82-2.16,6.63-3.72,4.54,5.13,10.12,9.17,15.7,13.08Z"/><path d="M1242.41,762.81c1.13,3.15,3.7,5.42,5.81,7.9-2.31,4.9-4.28,9.95-5.72,15.18-.4.08-.23-.17-.32-.4-.67-1.74-1.2-3.39-1.98-5.12-1.32-2.93-3-5.71-4.46-8.57,2.03-2.12,4.04-4.41,5.49-6.99.32-.57.5-1.27.77-1.77.11-.21,0-.31.4-.23Z"/><path d="M1196.49,730.29c-3.23,2.88-5.23,6.48-7.02,10.37-6.81-1.51-13.76-2.35-20.75-2.19,2.4-1.65,4.71-3.42,6.9-5.36,2.57-2.27,4.89-4.82,7.39-7.16,4.25,2.04,8.61,4.41,13.48,4.34Z"/><text x="1242" y="738" text-anchor="middle" font-family="Charter,'Iowan Old Style',Georgia,serif" font-size="46" font-weight="300">MH</text></svg></div></div>
   </aside>
   <footer class="foot fx">© 2026 Marchais-Honoré — Marque déposée</footer>
 
@@ -191,7 +256,7 @@ main .slot{position:absolute;inset:0;display:grid}
 (function(){
   var b=document.body,curtain=document.getElementById('curtain'),sp=document.getElementById('splash'),nl=document.getElementById('nl'),hdr=document.querySelector('header');
   function done(){b.classList.remove('intro')}
-  function showNl(ms){var c=false;try{c=sessionStorage.getItem('mhn')==='1'}catch(e){}if(c){nl.hidden=true;return}setTimeout(function(){nl.classList.add('show')},ms)}
+  function showNl(ms){var c=false;try{c=sessionStorage.getItem('mhn')==='1'||localStorage.getItem('mhs')==='1'}catch(e){}if(c){nl.hidden=true;return}setTimeout(function(){nl.classList.add('show')},ms)}
   var seen=false;try{seen=sessionStorage.getItem('mh')==='1'}catch(e){}
   var reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
   if(reduced||(seen&&location.hash.indexOf('rejouer')<0)){curtain.remove();sp.remove();done();showNl(1200)}
@@ -205,21 +270,62 @@ main .slot{position:absolute;inset:0;display:grid}
       showNl(1800);
     },3300);
   }
-  /* lettre d'information : inscriptions envoyées vers la feuille Google (Apps Script) */
+  /* lettre d'information : carte à états ; les données partent vers la feuille Google (Apps Script) */
   var ENDPOINT='https://script.google.com/macros/s/AKfycbxK9sQ1A2-rI0C6bI6a3FyEBK9ROkt_RijuKzdcilv5Tk__b2YxBpnrSvq4A-e0f-WT/exec';
-  document.getElementById('nlx').addEventListener('click',function(){nl.classList.remove('show');try{sessionStorage.setItem('mhn','1')}catch(e){}});
-  document.getElementById('nlf').addEventListener('submit',function(e){
+  var EMAIL=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var $=function(i){return document.getElementById(i)};
+  var f=$('nlf'),em=$('nle'),emw=$('nlem'),go=$('nlgo'),t=$('nlt'),msg=$('nlm'),nt=$('nlnt'),tg=$('nltg'),pf=$('nlpf');
+  var p1=$('nlp1'),p2=$('nlp2'),bd=$('nlbd'),sz=$('nlsz'),seg=$('nlseg'),civ='';
+  var busy=false;
+  function say(x){if(x){msg.textContent=x;msg.hidden=false;nt.style.visibility='hidden'}else{msg.hidden=true;nt.style.visibility=''}}
+  function title(a,b){t.classList.add('sw');setTimeout(function(){t.textContent='';t.appendChild(document.createTextNode(a));if(b){t.appendChild(document.createElement('br'));t.appendChild(document.createTextNode(b))}t.classList.remove('sw')},350)}
+  function hello(){var n=p1.value.trim();title(n?'Merci '+n+',':'Merci,','vous recevez nos communications')}
+  function setTab(on){[p1,p2,bd,sz].forEach(function(e){e.tabIndex=on?0:-1})}
+  function close(keep){nl.classList.remove('show');try{sessionStorage.setItem('mhn','1')}catch(e){}}
+  $('nlx').addEventListener('click',close);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&nl.classList.contains('show'))close()});
+  function flag(box){var i=box.querySelector('input,select');box.classList.toggle('has',!!(i&&i.value))}
+  /* état 1 à 3 : saisie de l'adresse */
+  function checkEm(){var ok=EMAIL.test(em.value.trim());emw.classList.toggle('has',!!em.value);emw.classList.toggle('ok',ok);go.classList.toggle('on',ok);if(msg.hidden===false)say('')}
+  em.addEventListener('input',checkEm);
+  /* état 5 : profil */
+  seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;civ=b.getAttribute('data-v');[].forEach.call(seg.children,function(x){x.setAttribute('aria-checked',x===b?'true':'false')})});
+  [p1,p2,bd].forEach(function(i){i.addEventListener('input',function(){flag(i.parentNode);if(i===p1&&nl.classList.contains('s3'))hello()})});
+  bd.addEventListener('input',function(){var d=bd.value.replace(/\D/g,'').slice(0,4);bd.value=d.length>2?d.slice(0,2)+'/'+d.slice(2):d;flag(bd.parentNode)});
+  sz.addEventListener('change',function(){sz.classList.toggle('v',!!sz.value)});
+  tg.addEventListener('click',function(){
+    if(nl.classList.contains('s3')){nl.classList.remove('s3');nl.classList.add('s2');tg.setAttribute('aria-expanded','false');go.textContent='m’inscrire';go.classList.remove('on');setTab(false);say('');return}
+    nl.classList.remove('s2');nl.classList.add('s3');tg.setAttribute('aria-expanded','true');go.textContent='Créer mon profil';go.classList.add('on');setTab(true);hello();
+  });
+  function send(extra){
+    var body=new URLSearchParams({email:em.value.trim().toLowerCase(),consent:'oui',source:location.pathname||'/',website:$('nlw').value});
+    for(var k in extra)body.set(k,extra[k]);
+    return fetch(ENDPOINT,{method:'POST',mode:'no-cors',body:body});
+  }
+  f.addEventListener('submit',function(e){
     e.preventDefault();
-    var m=document.getElementById('nlm'),em=document.getElementById('nle'),c=document.getElementById('nlc');
-    if(!em.value||em.validity&&!em.validity.valid){m.textContent='Veuillez saisir une adresse e-mail valide.';em.focus();return}
-    if(!c.checked){m.textContent='Veuillez confirmer avoir lu la politique de confidentialité.';return}
-    if(!ENDPOINT){m.textContent='L’inscription ouvrira très prochainement.';return}
-    var btn=document.querySelector('#nlf .go');btn.disabled=true;
-    var body=new URLSearchParams({email:em.value.trim(),consent:'oui',source:location.pathname||'/',website:document.getElementById('nlw').value});
-    fetch(ENDPOINT,{method:'POST',mode:'no-cors',body:body})
-      .then(function(){m.textContent='Merci. Votre inscription est bien enregistrée.';em.value='';c.checked=false})
-      .catch(function(){m.textContent='Une erreur est survenue. Veuillez réessayer.'})
-      .then(function(){btn.disabled=false});
+    if(busy)return;
+    /* étape 1 : adresse */
+    if(!nl.classList.contains('s2')&&!nl.classList.contains('s3')){
+      if(!EMAIL.test(em.value.trim())){say('Veuillez saisir une adresse e-mail valide.');em.focus();return}
+      busy=true;go.disabled=true;say('');
+      send({}).then(function(){
+        try{localStorage.setItem('mhs','1')}catch(x){}
+        em.readOnly=true;em.setAttribute('aria-readonly','true');
+        nl.classList.add('s2');title('Merci,','vous recevez nos communications');
+      }).catch(function(){say('Une erreur est survenue. Veuillez réessayer.')}).then(function(){busy=false;go.disabled=false});
+      return;
+    }
+    /* étape 2 : profil */
+    var d=bd.value.trim();
+    if(d){var m=/^(\d{2})\/(\d{2})$/.exec(d),dd=m&&+m[1],mm=m&&+m[2];if(!m||mm<1||mm>12||dd<1||dd>[31,29,31,30,31,30,31,31,30,31,30,31][mm-1]){say('Jour d’anniversaire : jour et mois, par exemple 14/03.');bd.focus();return}}
+    busy=true;go.disabled=true;say('');
+    var n=p1.value.trim();
+    send({prenom:n,nom:p2.value.trim(),civilite:civ,anniversaire:d,taille:sz.value.replace('taille ','')}).then(function(){
+      $('nlfin').textContent=(n?n+', nous':'Nous')+' sommes ravis de vous compter parmi nous';
+      nl.classList.remove('s2','s3');nl.classList.add('s4');setTab(false);
+      setTimeout(close,6500);
+    }).catch(function(){say('Une erreur est survenue. Veuillez réessayer.')}).then(function(){busy=false;go.disabled=false});
   });
 })();
 </script>

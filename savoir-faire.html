@@ -49,6 +49,7 @@ body.mo .veil{opacity:1}
 .crumb{transition:opacity .3s ease}
 body.mo .crumb{opacity:0}
 .foot{display:flex;align-items:center;height:var(--fh);padding:0 var(--pad);background:var(--bg);color:var(--nuit);font:300 var(--nav)/1 var(--sans);letter-spacing:.025em}
+.foot a{margin-left:auto;color:inherit;text-decoration:none}.foot a:hover{text-decoration:underline;text-underline-offset:3px}
 .foot.fx{position:fixed;left:0;right:0;bottom:0;z-index:45}
 .burger{display:none;justify-self:start;background:none;border:0;color:inherit;cursor:pointer;padding:0;width:26px;height:calc(var(--w)*52/400);position:relative}
 .burger i{position:absolute;left:3px;right:3px;height:1px;background:currentColor;transition:transform .35s ease,opacity .25s ease}
@@ -84,10 +85,16 @@ main{padding-top:var(--hh);min-height:calc(100vh - var(--fh))}
 .crumb i{display:inline-block;width:3px;height:3px;border-radius:50%;background:currentColor;margin:0 .95em;opacity:.8}
 .manif{max-width:38rem;margin:clamp(48px,11vh,130px) 0 clamp(80px,12vh,160px) max(var(--pad),20vw);padding-right:var(--pad);font-size:clamp(15px,1.08vw,17px);line-height:1.75;color:var(--nuit)}
 .manif p+p{margin-top:1.5em}
-.sfv{margin:clamp(48px,11vh,130px) 0 clamp(80px,12vh,160px) max(var(--pad),20vw)}
-.sfv .slot{position:relative;width:clamp(240px,26vw,420px);aspect-ratio:2/3;background-color:#ecebe7}
-.sfv p{margin-top:1.1rem;font:300 var(--nav)/1.3 var(--sans);letter-spacing:.025em;color:var(--nuit)}
-@media (max-width:760px){.manif,.sfv{margin-left:var(--pad)}}
+.sfv{display:flex;align-items:flex-start;gap:clamp(36px,6vw,110px);margin:clamp(48px,11vh,130px) var(--pad) clamp(80px,12vh,160px) max(var(--pad),20vw)}
+.sfv .ph{flex:none;width:clamp(240px,26vw,420px)}
+.sfv .slot{position:relative;width:100%;aspect-ratio:2/3;background-color:#ecebe7}
+.sftx{max-width:31rem;font-size:clamp(15px,1.08vw,17px);line-height:1.75;color:var(--nuit)}
+.sftx p+p{margin-top:1.5em}
+.sftx .sig{margin-top:2.2em;font-weight:700}
+.sftx .lk{display:inline-block;margin-top:2.4em;font:300 var(--nav)/1 var(--sans);letter-spacing:.025em;color:var(--nuit);text-decoration:none}
+.sftx .lk:hover{text-decoration:underline;text-underline-offset:3px}
+@media (max-width:900px){.sfv{flex-direction:column;gap:2rem}.sfv .ph{width:min(70vw,320px)}}
+@media (max-width:760px){.manif{margin-left:var(--pad)}}
 </style>
 <meta name="robots" content="noindex">
 </head>
@@ -107,9 +114,19 @@ main{padding-top:var(--hh);min-height:calc(100vh - var(--fh))}
 
   <main>
     <div class="crumb"><span>Marchais-Honoré</span><i></i><span>Savoir-faire de 1563</span></div>
-    <div class="sfv"><div class="slot " data-slot="savoirfaire_visuel" style=""><span class="slot-label">savoirfaire_visuel</span></div><p>Texte à venir</p></div>
+    <div class="sfv">
+      <div class="ph"><div class="slot " data-slot="savoirfaire_visuel" style=""><span class="slot-label">savoirfaire_visuel</span></div></div>
+      <div class="sftx">
+        <p>Un geste ne se conserve pas : il se transmet.</p>
+        <p>À Grenoble, le métier de gantier passe de main en main depuis 1563. Pierre Marchais forme ses gendres, Jean Honoré lui succède, puis Mathieu Robert reprend l’atelier et devient, en 1606, gantier et parfumeur du roi. Dès 1595, un contrat d’apprentissage lie un apprenti à un gantier-parfumeur.</p>
+        <p>Les siècles suivants suivent le même fil. Chez Terray, de père en fils. Chez Reynier, du fondateur à ses trois fils. Chez Perrin, d’une mère à ses fils. À chaque génération, les mains qui savent forment celles qui apprennent.</p>
+        <p>Puis la filière s’est éteinte, et avec elle les mains qui savaient. Marchais-Honoré reprend le fil en 2026 : former, à Grenoble, celles et ceux qui transmettront le geste à leur tour.</p>
+        <p class="sig">Un savoir-faire de 1563. Une Maison de 2026.</p>
+        <a class="lk" href="archives.html">&gt;&nbsp;&nbsp;Explorer les archives</a>
+      </div>
+    </div>
   </main>
-  <footer class="foot">© 2026 Marchais-Honoré — Marque déposée</footer>
+  <footer class="foot">© 2026 Marchais-Honoré — Marque déposée<a href="https://www.linkedin.com/company/marchais-honoré/" target="_blank" rel="noopener me">LinkedIn</a></footer>
 
 <script>
 (function(){

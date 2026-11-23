@@ -1,0 +1,220 @@
+ARCHIVE — Carte newsletter AVEC création de profil (civilité, prénom, nom, anniversaire, taille de gant)
+Retirée du site le 23/11/2026. Contenu de la carte à 7 états (maquette Illustrator), prête à être réinsérée.
+Elle écrit dans la feuille Google via le script Apps Script « profil » (colonnes Prénom, Nom, Civilité, Anniversaire, Taille de gant).
+Le logo MH vient de assets/icon.png (inséré dans la page en base64 à la place de @@MH@@).
+Pour la restaurer : coller le CSS dans <style>, le HTML avant </body> (après le bandeau), le JS dans le <script> de la page d'accueil.
+
+==================== CSS ====================
+/* lettre d'information : bandeau discret, puis carte centrée à 7 états (1 u = 1 px à 425 px de large) */
+.nb{position:fixed;left:0;right:0;bottom:var(--fh);z-index:40;background:var(--bg);color:var(--nuit);padding:2.1rem 1rem .85rem;display:flex;flex-direction:column;align-items:center;
+  font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  transform:translateY(calc(105% + var(--fh)));transition:transform .9s cubic-bezier(.22,1,.36,1)}
+.nb.show{transform:none}
+.nb[hidden]{display:none}
+.nb p{margin:0 0 1.2rem;font-size:var(--nav);line-height:1.2;letter-spacing:.025em}
+.nb .nbf{display:block;width:clamp(250px,18.4vw,420px);text-align:left;background:transparent;border:0;border-bottom:1px solid #d9d8d9;border-radius:0;padding:.2rem 0 .55rem;cursor:text;font:300 var(--nav)/1.3 var(--sans);color:#adafb2;-webkit-appearance:none;appearance:none}
+.nb .nbf:hover{border-bottom-color:#8a8a8f}
+.nb .nbx{position:absolute;right:var(--pad);top:1.1rem;background:none;border:0;cursor:pointer;width:22px;height:22px;color:var(--nuit);padding:0}
+.nb .nbx::before,.nb .nbx::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:1px;background:currentColor;transform:translate(-50%,-50%) rotate(45deg)}
+.nb .nbx::after{transform:translate(-50%,-50%) rotate(-45deg)}
+.nl{--ch:584;--cw:min(max(300px,25vw),520px,calc((100vh - var(--hh) - var(--fh) - 24px)*425/584));--u:calc(var(--cw)/425);
+  position:fixed;z-index:45;left:50%;top:calc(var(--hh) + (100vh - var(--hh) - var(--fh))/2);width:var(--cw);height:calc(var(--ch)*var(--u));
+  background:var(--bg);color:var(--nuit);font-family:var(--sans);font-weight:300;letter-spacing:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  transform:translate(-50%,-47%);opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .7s ease,transform .9s cubic-bezier(.22,1,.36,1),height .8s cubic-bezier(.22,1,.36,1),top .5s ease,visibility 0s .9s}
+@supports (height:100dvh){.nl{--cw:min(max(300px,25vw),520px,calc((100dvh - var(--hh) - var(--fh) - 24px)*425/584));top:calc(var(--hh) + (100dvh - var(--hh) - var(--fh))/2)}}
+@media (max-width:760px){.nl{--cw:min(90vw,400px,calc((100vh - var(--hh) - var(--fh) - 24px)*425/584))}}
+@supports (height:100dvh){@media (max-width:760px){.nl{--cw:min(90vw,400px,calc((100dvh - var(--hh) - var(--fh) - 24px)*425/584))}}}
+.nl.s2{--ch:196}.nl.s3{--ch:509}.nl.s4{--ch:170}
+.nl.show{opacity:1;visibility:visible;transform:translate(-50%,-50%);pointer-events:auto;transition-delay:0s}
+.nl.kb.show{top:calc(var(--vvt,0px) + var(--hh) + 10px);transform:translate(-50%,0)}
+.nl[hidden]{display:none}
+.nl *{box-sizing:border-box}
+.nl button,.nl input,.nl select{font-family:var(--sans);color:var(--nuit);-webkit-appearance:none;appearance:none;border-radius:0}
+.nl .x{position:absolute;right:0;top:-34px;width:22px;height:22px;background:none;border:0;cursor:pointer;color:#fff;padding:0}
+.nl .x::before,.nl .x::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:1px;background:currentColor;transform:translate(-50%,-50%) rotate(45deg)}
+.nl .x::after{transform:translate(-50%,-50%) rotate(-45deg)}
+.nl .t{position:absolute;left:calc(26*var(--u));top:calc(27*var(--u));margin:0;font:400 calc(14.5*var(--u))/calc(16*var(--u)) var(--sans);transition:opacity .35s ease;white-space:nowrap}
+.nl .t.sw{opacity:0}
+.nl .mk{position:absolute;right:calc(24*var(--u));top:calc(19*var(--u));width:calc(64*var(--u));opacity:0;transition:opacity .8s ease .2s;pointer-events:none}
+.nl .mk img,.nl .fin .mk2 img{display:block;width:100%;height:auto}
+.nl.s2 .mk,.nl.s3 .mk{opacity:1}
+.nl .em,.nl .fl{position:absolute}
+.nl .em{left:calc(26*var(--u));right:calc(26*var(--u));top:calc(280*var(--u));height:calc(28*var(--u));transition:top .8s cubic-bezier(.22,1,.36,1)}
+.nl.s2 .em,.nl.s3 .em{top:calc(98*var(--u))}
+.nl .em input,.nl .fl input,.nl .fl select{display:block;width:100%;height:calc(28*var(--u));border:0;border-bottom:1px solid #d9d8d9;background:transparent;outline:0;padding:0;font-weight:300;font-size:max(calc(18*var(--u)),16px);line-height:calc(28*var(--u));letter-spacing:-.01em;color:var(--nuit);transition:border-color .3s;text-overflow:ellipsis}
+.nl .em input{padding-right:calc(26*var(--u))}
+.nl .em input::placeholder,.nl .fl input::placeholder{color:#adafb2;opacity:1;font-weight:300}
+.nl .em:focus-within input::placeholder,.nl .fl:focus-within input::placeholder{color:transparent}
+.nl .em input:focus,.nl .fl input:focus,.nl .fl select:focus{border-bottom-color:#8a8a8f}
+.nl .lab{position:absolute;left:0;top:calc(-17*var(--u));font-size:max(calc(8*var(--u)),8px);line-height:calc(9*var(--u));color:#9a9a9a;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.nl .em:not(.ok):focus-within .lab,.nl .em:not(.ok).has .lab,.nl .fl:focus-within .lab,.nl .fl.has .lab{opacity:1}
+.nl .ck{position:absolute;right:0;bottom:calc(7*var(--u));width:calc(16*var(--u));height:calc(16*var(--u));border-radius:50%;background:#212c59;opacity:0;transform:scale(.6);transition:opacity .35s,transform .45s cubic-bezier(.22,1,.36,1);pointer-events:none}
+.nl .ck svg{position:absolute;inset:0;width:100%;height:100%}
+.nl .em.ok .ck{opacity:1;transform:none}
+.nl .tg{position:absolute;left:calc(26*var(--u));right:calc(26*var(--u));top:calc(150*var(--u));height:calc(20*var(--u));display:flex;align-items:center;justify-content:space-between;background:none;border:0;padding:0;cursor:pointer;font:400 calc(14*var(--u))/calc(20*var(--u)) var(--sans);text-align:left;opacity:0;pointer-events:none;transition:opacity .8s ease .3s}
+.nl.s2 .tg,.nl.s3 .tg{opacity:1;pointer-events:auto}
+.nl .chv{width:calc(7*var(--u));height:calc(10*var(--u));color:#b0b0b0;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.nl.s3 .chv{transform:rotate(90deg)}
+.nl .pf{opacity:0;pointer-events:none;transition:opacity .6s ease}
+.nl.s3 .pf{opacity:1;pointer-events:auto}
+.nl .seg{position:absolute;left:calc(26*var(--u));right:calc(26*var(--u));top:calc(193*var(--u));height:calc(32*var(--u));display:flex;border:1px solid #a8a8a8}
+.nl .seg button{flex:1;background:none;border:0;padding:0;cursor:pointer;font:300 max(calc(18*var(--u)),16px)/calc(30*var(--u)) var(--sans);color:#b4b4b4;transition:color .25s}
+.nl .seg button[aria-checked=true]{color:var(--nuit)}
+.nl .fl{width:calc(170*var(--u))}
+.nl .fa{left:calc(26*var(--u))}.nl .fb{left:calc(231*var(--u))}
+.nl .r1{top:calc(277*var(--u))}.nl .r2{top:calc(355*var(--u))}
+.nl .fa input,.nl .fb input{color:#212c59}
+.nl .fl select{padding-right:calc(14*var(--u));cursor:pointer;color:#adafb2}
+.nl .fl select.v{color:var(--nuit)}
+.nl .fl select option{color:var(--nuit)}
+.nl .fl .chv{position:absolute;right:calc(3*var(--u));bottom:calc(9*var(--u));pointer-events:none}
+.nl .go{position:absolute;right:calc(26*var(--u));bottom:calc(17*var(--u));width:calc(154*var(--u));height:calc(32*var(--u));padding:0;background:transparent;border:1px solid #1a1a1a;font:300 max(calc(10*var(--u)),10px)/calc(30*var(--u)) var(--sans);letter-spacing:.01em;cursor:pointer;transition:background .35s,color .35s,border-color .35s,opacity .5s}
+.nl .go.on{background:#212c59;border-color:#212c59;color:#fff}
+.nl.s2 .go{opacity:0;pointer-events:none}
+@media (hover:hover){.nl .go:hover,.nl .tg:hover span{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}}
+.nl .nt{position:absolute;left:calc(26*var(--u));bottom:calc(17*var(--u));width:calc(190*var(--u));margin:0;font-size:max(calc(9*var(--u)),9.5px);line-height:max(calc(11*var(--u)),11.5px);color:#8f8f8f}
+.nl .nt a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.nl .nt.er{color:var(--nuit)}
+.nl.s2 .nt.n1{opacity:0;pointer-events:none}
+.nl .nt.n2{opacity:0;pointer-events:none}
+.nl.s3 .nt.n1{opacity:0;pointer-events:none}
+.nl.s3 .nt.n2{opacity:1;pointer-events:auto}
+.nl .fin{position:absolute;left:calc(26*var(--u));right:calc(26*var(--u));top:50%;transform:translateY(-50%);display:flex;align-items:center;justify-content:space-between;gap:calc(24*var(--u));opacity:0;pointer-events:none;font-size:calc(14*var(--u));line-height:calc(17*var(--u))}
+.nl .fin p{margin:0;max-width:calc(215*var(--u))}
+.nl .fin .mk2{width:calc(64*var(--u));flex:none}
+.nl.s4 .fin{opacity:1;transition:opacity 1s ease .45s}
+.nl.s4 .t,.nl.s4 .mk,.nl.s4 .em,.nl.s4 .tg,.nl.s4 .pf,.nl.s4 .go,.nl.s4 .nt{opacity:0;pointer-events:none;transition:opacity .4s ease}
+
+==================== HTML ====================
+  <aside class="nb" id="nb" aria-label="Lettre d’information">
+    <button class="nbx" id="nbx" type="button" aria-label="Fermer"></button>
+    <p>Inscrivez-vous à notre lettre d’information</p>
+    <button class="nbf" id="nbf" type="button">Votre adresse e-mail</button>
+  </aside>
+  <aside class="nl" id="nl" aria-label="Lettre d’information" role="dialog">
+    <button class="x" id="nlx" type="button" aria-label="Fermer"></button>
+    <p class="t" id="nlt">Restez informé</p>
+    <div class="mk" aria-hidden="true">@@MH@@</div>
+    <form id="nlf" novalidate autocomplete="off">
+      <input type="text" id="nlw" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0">
+      <div class="em" id="nlem">
+        <span class="lab">email</span>
+        <input id="nle" type="email" name="email" placeholder="votre adresse email" aria-label="Adresse e-mail" autocomplete="email" inputmode="email" enterkeyhint="send" required>
+        <span class="ck" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.6 8.3l2.2 2.2 4.6-4.6" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <button class="tg" id="nltg" type="button" aria-expanded="false" aria-controls="nlpf"><span>Créer un compte</span><svg class="chv" viewBox="0 0 7 10" aria-hidden="true"><path d="M1.2 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="pf" id="nlpf">
+        <div class="seg" id="nlseg" role="radiogroup" aria-label="Civilité">
+          <button type="button" role="radio" aria-checked="false" data-v="Madame">Mme.</button>
+          <button type="button" role="radio" aria-checked="false" data-v="Monsieur">Mr.</button>
+          <button type="button" role="radio" aria-checked="false" data-v="Sans civilité" aria-label="Sans civilité">Ø</button>
+        </div>
+        <div class="fl fa r1"><span class="lab">prénom</span><input id="nlp1" type="text" placeholder="Prénom" aria-label="Prénom" autocomplete="given-name" maxlength="60" tabindex="-1"></div>
+        <div class="fl fb r1"><span class="lab">nom</span><input id="nlp2" type="text" placeholder="Nom" aria-label="Nom" autocomplete="family-name" maxlength="60" tabindex="-1"></div>
+        <div class="fl fa r2"><span class="lab">JJ/MM</span><input id="nlbd" type="text" inputmode="numeric" placeholder="Jour d’anniversaire" aria-label="Jour d’anniversaire (jour et mois, JJ/MM)" maxlength="5" tabindex="-1"></div>
+        <div class="fl fb r2"><span class="lab">taille de gant</span><select id="nlsz" aria-label="Taille de gant" tabindex="-1"><option value="" selected>taille de gant</option><option>taille 6</option><option>taille 6½</option><option>taille 7</option><option>taille 7½</option><option>taille 8</option><option>taille 8½</option><option>taille 9</option><option>taille 9½</option><option>taille 10</option></select><svg class="chv" viewBox="0 0 7 10" aria-hidden="true"><path d="M1.2 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+      <p class="nt n1" id="nlnt">En vous inscrivant, vous acceptez de recevoir nos communications. <a href="confidentialite.pdf" target="_blank" rel="noopener">Politique de confidentialité</a></p>
+      <p class="nt n2" id="nlnt2">Facultatif. Ces informations servent uniquement à personnaliser nos messages.</p>
+      <p class="nt er" id="nlm" role="status" aria-live="polite" hidden></p>
+      <button class="go" id="nlgo" type="submit">m’inscrire</button>
+    </form>
+    <div class="fin" aria-live="polite"><p id="nlfin"></p><div class="mk2" aria-hidden="true">@@MH@@</div></div>
+  </aside>
+  <footer class="foot fx">© 2026 Marchais-Honoré — Marque déposée</footer>
+
+==================== JS ====================
+  /* lettre d'information : bandeau, puis carte à états ; envoi en arrière-plan vers la feuille Google (Apps Script) */
+  var ENDPOINT='https://script.google.com/macros/s/AKfycbxK9sQ1A2-rI0C6bI6a3FyEBK9ROkt_RijuKzdcilv5Tk__b2YxBpnrSvq4A-e0f-WT/exec';
+  var EMAIL=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var $=function(i){return document.getElementById(i)};
+  var nb=$('nb'),f=$('nlf'),em=$('nle'),emw=$('nlem'),go=$('nlgo'),t=$('nlt'),msg=$('nlm'),nt=$('nlnt'),tg=$('nltg');
+  var p1=$('nlp1'),p2=$('nlp2'),bd=$('nlbd'),sz=$('nlsz'),seg=$('nlseg'),civ='';
+  function subscribed(){return nl.classList.contains('s2')||nl.classList.contains('s3')||nl.classList.contains('s4')}
+  /* file d'envoi : écrite d'abord sur l'appareil, puis envoyée ; renvoyée au prochain passage en cas d'échec */
+  var sending=false;
+  function getQ(){try{return JSON.parse(localStorage.getItem('mhq')||'[]')}catch(e){return []}}
+  function setQ(q){try{localStorage.setItem('mhq',JSON.stringify(q))}catch(e){}}
+  function flush(){
+    if(sending)return;var q=getQ();if(!q.length)return;sending=true;
+    var body=new URLSearchParams(q[0]);
+    fetch(ENDPOINT,{method:'POST',mode:'no-cors',body:body,keepalive:true}).then(function(){var r=getQ();r.shift();setQ(r);sending=false;flush()}).catch(function(){sending=false})
+  }
+  function enqueue(extra){var o={email:em.value.trim().toLowerCase(),consent:'oui',source:location.pathname||'/',website:$('nlw').value};for(var k in extra)o[k]=extra[k];var q=getQ();q.push(o);setQ(q);flush()}
+  flush();
+  function say(x){if(x){msg.textContent=x;msg.hidden=false;nt.style.visibility='hidden'}else{msg.hidden=true;nt.style.visibility=''}}
+  /* titres */
+  var nm=null,shown='',tm=0;
+  function title(first){
+    t.classList.add('sw');
+    setTimeout(function(){
+      t.textContent='';
+      if(first){t.appendChild(document.createTextNode(first));t.classList.remove('sw');return}
+      t.appendChild(document.createTextNode('Merci'));nm=document.createElement('span');t.appendChild(nm);t.appendChild(document.createTextNode(','));
+      t.appendChild(document.createElement('br'));t.appendChild(document.createTextNode('vous recevez nos communications'));
+      shown='';t.classList.remove('sw');nameTo();
+    },350);
+  }
+  function target(){var n=p1.value.trim();return n?' '+n:''}
+  function nameTo(){
+    if(!nm||tm)return;
+    tm=setInterval(function(){
+      var tg_=target(),i=0;while(i<shown.length&&i<tg_.length&&shown[i]===tg_[i])i++;
+      if(shown.length>i)shown=shown.slice(0,-1);else if(shown.length<tg_.length)shown+=tg_[shown.length];else{clearInterval(tm);tm=0;return}
+      nm.textContent=shown;
+    },38);
+  }
+  function setTab(on){[p1,p2,bd,sz].forEach(function(e){e.tabIndex=on?0:-1})}
+  /* bandeau -> carte */
+  function openCard(){nl.classList.add('show');em.focus({preventScroll:true});nb.classList.remove('show');vvfit()}
+  function closeCard(){
+    nl.classList.remove('show','kb');if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+    if(subscribed()||localStorage.getItem('mhs')==='1'){try{sessionStorage.setItem('mhn','1')}catch(e){}return}
+    nb.classList.add('show');
+  }
+  $('nbf').addEventListener('click',openCard);
+  $('nbx').addEventListener('click',function(){nb.classList.remove('show');try{sessionStorage.setItem('mhn','1')}catch(e){}});
+  $('nlx').addEventListener('click',closeCard);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&nl.classList.contains('show'))closeCard()});
+  /* clavier mobile : la carte remonte pour rester visible */
+  var vv=window.visualViewport;
+  function vvfit(){if(!vv)return;var kb=vv.height<window.innerHeight*.8;nl.style.setProperty('--vvt',vv.offsetTop+'px');nl.classList.toggle('kb',kb&&nl.classList.contains('show'))}
+  if(vv){vv.addEventListener('resize',vvfit);vv.addEventListener('scroll',vvfit)}
+  /* états 1 à 3 : saisie de l'adresse */
+  function flag(box){var i=box.querySelector('input,select');box.classList.toggle('has',!!(i&&i.value))}
+  em.addEventListener('input',function(){var ok=EMAIL.test(em.value.trim());emw.classList.toggle('has',!!em.value);emw.classList.toggle('ok',ok);go.classList.toggle('on',ok);if(!msg.hidden)say('')});
+  /* profil */
+  seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;civ=b.getAttribute('data-v');[].forEach.call(seg.children,function(x){x.setAttribute('aria-checked',x===b?'true':'false')})});
+  p1.addEventListener('input',function(){flag(p1.parentNode);nameTo()});
+  p2.addEventListener('input',function(){flag(p2.parentNode)});
+  bd.addEventListener('input',function(){var d=bd.value.replace(/\D/g,'').slice(0,4);bd.value=d.length>2?d.slice(0,2)+'/'+d.slice(2):d;flag(bd.parentNode)});
+  sz.addEventListener('change',function(){sz.classList.toggle('v',!!sz.value);flag(sz.parentNode)});
+  tg.addEventListener('click',function(){
+    if(nl.classList.contains('s3')){nl.classList.replace('s3','s2');tg.setAttribute('aria-expanded','false');go.textContent='m’inscrire';go.classList.remove('on');setTab(false);say('');return}
+    nl.classList.replace('s2','s3');tg.setAttribute('aria-expanded','true');go.textContent='Créer mon profil';go.classList.add('on');setTab(true);
+  });
+  var lock=0;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(lock)return;
+    if(!subscribed()){
+      if(!EMAIL.test(em.value.trim())){say('Veuillez saisir une adresse e-mail valide.');em.focus();return}
+      lock=1;setTimeout(function(){lock=0},500);say('');
+      enqueue({});
+      try{localStorage.setItem('mhs','1')}catch(x){}
+      em.readOnly=true;em.setAttribute('aria-readonly','true');em.blur();
+      nl.classList.add('s2');title();
+      return;
+    }
+    var d=bd.value.trim();
+    if(d){var m=/^(\d{2})\/(\d{2})$/.exec(d),dd=m&&+m[1],mm=m&&+m[2];if(!m||mm<1||mm>12||dd<1||dd>[31,29,31,30,31,30,31,31,30,31,30,31][mm-1]){say('Jour d’anniversaire : jour et mois, par exemple 14/03.');bd.focus();return}}
+    lock=1;setTimeout(function(){lock=0},500);say('');
+    var n=p1.value.trim();
+    enqueue({prenom:n,nom:p2.value.trim(),civilite:civ,anniversaire:d,taille:sz.value.replace('taille ','')});
+    $('nlfin').textContent=(n?n+', nous':'Nous')+' sommes ravis de vous compter parmi nous.';
+    if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+    nl.classList.remove('s2','s3');nl.classList.add('s4');setTab(false);
+    setTimeout(closeCard,6500);
+  });
+})();

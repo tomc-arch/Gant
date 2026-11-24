@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /legal/
 
 # Moteurs de recherche et assistants IA : lecture et citation bienvenues
 User-agent: GPTBot
@@ -34,5 +35,6 @@ Allow: /
 
 User-agent: Bingbot
 Allow: /
+Disallow: /legal/
 
 Sitemap: https://xn--marchais-honor-okb.com/sitemap.xml

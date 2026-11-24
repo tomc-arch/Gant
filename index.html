@@ -270,7 +270,7 @@ main .slot{position:absolute;inset:0;display:grid}
     if(sending)return;var q=getQ();if(!q.length)return;sending=true;
     fetch(ENDPOINT,{method:'POST',mode:'no-cors',body:new URLSearchParams(q[0]),keepalive:true}).then(function(){var r=getQ();r.shift();setQ(r);sending=false;flush()}).catch(function(){sending=false})
   }
-  function enqueue(){var q=getQ();q.push({email:em.value.trim().toLowerCase(),consent:'oui',origine:'newsletter',source:location.pathname||'/',website:$('nlw').value});setQ(q);flush()}
+  function enqueue(){var q=getQ();q.push({email:em.value.trim().toLowerCase(),consent:'oui',origine:'newsletter',lang:(document.documentElement.lang||'fr').slice(0,2),source:location.pathname||'/',website:$('nlw').value});setQ(q);flush()}
   flush();
   function say(x){if(x){msg.textContent=x;msg.hidden=false;nt.style.visibility='hidden'}else{msg.hidden=true;nt.style.visibility=''}}
   var vv=window.visualViewport;

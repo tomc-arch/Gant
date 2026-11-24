@@ -93,15 +93,40 @@ main{padding-top:var(--hh);min-height:calc(100vh - var(--fh))}
 .crumb i{display:inline-block;width:3px;height:3px;border-radius:50%;background:currentColor;margin:0 .95em;opacity:.8}
 .manif{max-width:38rem;margin:clamp(48px,11vh,130px) 0 clamp(80px,12vh,160px) max(var(--pad),20vw);padding-right:var(--pad);font-size:clamp(15px,1.08vw,17px);line-height:1.75;color:var(--nuit)}
 .manif p+p{margin-top:1.5em}
-.sfv{display:flex;align-items:flex-start;gap:clamp(36px,6vw,110px);margin:clamp(48px,11vh,130px) var(--pad) clamp(80px,12vh,160px) max(var(--pad),20vw)}
-.sfv .ph{flex:none;width:clamp(240px,26vw,420px)}
-.sfv .slot{position:relative;width:100%;aspect-ratio:2/3;background-color:#ecebe7}
-.sftx{max-width:31rem;font-size:clamp(15px,1.08vw,17px);line-height:1.75;color:var(--nuit)}
+.mf{margin:clamp(40px,8vh,110px) var(--pad) clamp(80px,12vh,160px) max(var(--pad),12vw);color:var(--nuit);font-size:clamp(15px,1.08vw,17px);line-height:1.75}
+.mf-r{display:grid;grid-template-columns:minmax(0,30vw) minmax(0,46vw);column-gap:max(24px,1vw);align-items:start;padding:clamp(28px,4.6vw,76px) 0;outline:none}
+.mf-t{margin:0;font-family:inherit;font-weight:400;font-size:1.22em;line-height:1.3;color:var(--nuit);padding-top:.05em}
+.mf-t span{position:relative;display:inline-block;padding-bottom:.28em}
+.mf-t span::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:currentColor;transform:scaleX(.16);transform-origin:left center;opacity:.35;transition:transform 1s cubic-bezier(.65,0,.25,1),opacity .8s ease}
+.mf-x{margin:0;opacity:.17;transition:opacity 1.1s ease}
+.mf-x p+p{margin-top:1.2em}
+.mf-r.on .mf-x{opacity:1}
+.mf-r.on .mf-t span::after{transform:scaleX(1);opacity:1}
+.mf-r:first-child .mf-x{animation:mfin 1.4s ease both}
+@keyframes mfin{from{opacity:0}to{opacity:1}}
+.mf-r:focus-visible .mf-t span{outline:1px dotted currentColor;outline-offset:6px}
+@media (max-width:900px){.mf{margin-left:var(--pad)}.mf-r{grid-template-columns:minmax(0,1fr);row-gap:.9rem;padding:clamp(26px,6vw,44px) 0}.mf-t{font-size:1.2em}}
+@media (prefers-reduced-motion:reduce){.mf-x,.mf-t span::after{transition-duration:.01s}.mf-r:first-child .mf-x{animation:none}}
+.sfv{display:flex;align-items:flex-start;justify-content:flex-start;gap:clamp(40px,8vw,140px);margin:clamp(48px,11vh,130px) var(--pad) clamp(80px,12vh,160px) max(var(--pad),12vw)}
+.sftx{flex:none;width:min(33rem,100%);font-size:clamp(15px,1.08vw,17px);line-height:1.75;color:var(--nuit)}
 .sftx p+p{margin-top:1.5em}
+.sftx .lead{font-size:1.32em;line-height:1.4}
 .sftx .sig{margin-top:2.2em;font-weight:700}
 .sftx .lk{display:inline-block;margin-top:2.4em;font:300 var(--nav)/1 var(--sans);letter-spacing:.025em;color:var(--nuit);text-decoration:none}
 .sftx .lk:hover{text-decoration:underline;text-underline-offset:3px}
-@media (max-width:900px){.sfv{flex-direction:column;gap:2rem}.sfv .ph{width:min(70vw,320px)}}
+.frise{position:relative;flex:none;width:min(21rem,100%);margin:0;padding:.4em 0 0 1.7rem;list-style:none;color:var(--nuit)}
+.frise li{position:relative;padding-bottom:1.35rem;font-size:clamp(13px,.95vw,15px);line-height:1.45;animation:fin .9s ease both}
+.frise li::before{content:"";position:absolute;left:calc(-1.7rem + 0px);top:.55em;width:7px;height:7px;border-radius:50%;background:var(--bg);border:1px solid currentColor;box-sizing:border-box}
+.frise li:last-child{padding-bottom:0}
+.frise li:not(:last-child)::after{content:"";position:absolute;left:calc(-1.7rem + 3px);top:calc(.55em + 7px);bottom:calc(-.55em);width:1px;background:currentColor;opacity:.4}
+.frise li:last-child::before{background:currentColor}
+.frise b{display:block;font-weight:400;font-size:1.12em;letter-spacing:.01em}
+.frise span{display:block;opacity:.72}
+.frise li:last-child b{font-weight:700}
+.frise li:nth-child(1){animation-delay:.5s}.frise li:nth-child(2){animation-delay:.75s}.frise li:nth-child(3){animation-delay:1s}.frise li:nth-child(4){animation-delay:1.25s}.frise li:nth-child(5){animation-delay:1.5s}.frise li:nth-child(6){animation-delay:1.75s}.frise li:nth-child(7){animation-delay:2s}.frise li:nth-child(8){animation-delay:2.25s}
+@keyframes fin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (max-width:1000px){.sfv{flex-direction:column;gap:3rem}}
+@media (prefers-reduced-motion:reduce){.frise li{animation:none}}
 @media (max-width:760px){.manif{margin-left:var(--pad)}}
 </style>
 </head>
@@ -121,11 +146,11 @@ main{padding-top:var(--hh);min-height:calc(100vh - var(--fh))}
 
   <main>
     <div class="crumb"><span>Marchais-Honoré</span><i></i><span>Manifeste</span></div>
-    <article class="manif">
-      <p>Tout commence rue du Palais, à Grenoble, en 1563. Pierre Marchais y est le premier gantier de la ville. Il forme ses gendres au métier ; Jean Honoré lui succède. Le geste passe de main en main. Trois siècles plus tard, Grenoble est la capitale mondiale du gant. Jouvin, Perrin, Lesdiguières-Barnier en portent le savoir-faire.</p>
-      <p>Face à une concurrence à bas prix partout en Europe et dans le monde, Grenoble n’a toujours connu qu’une seule voie : l’excellence. Les artisans ont forgé un Métier robuste et résilient.</p>
-      <p>Les siècles, les guerres, les modes éphémères ont passé. Le gant de Grenoble n’a jamais cédé au compromis. Un savoir-faire de 1563, taillé pour braver le temps : l’insigne de ceux qui créent, qui façonnent, et dont l’œuvre traverse les âges.</p>
-      <p>Puis la filière s’est éteinte. Marchais-Honoré naît en 2026. Elle fait hommage aux grands noms de la ganterie, fait renaître ce savoir-faire là où il s’est développé, et construit de nouveau à Grenoble la production qui fit sa renommée.</p>
+    <article class="mf">
+      <section class="mf-r" tabindex="0"><h2 class="mf-t"><span>1563</span></h2><div class="mf-x"><p>Tout commence rue du Palais, à Grenoble, en 1563. Pierre Marchais y est le premier gantier de la ville. Il forme ses gendres au métier ; Jean Honoré lui succède. Le geste passe de main en main. Trois siècles plus tard, Grenoble est la capitale mondiale du gant. Jouvin, Perrin, Lesdiguières-Barnier en portent le savoir-faire.</p></div></section>
+      <section class="mf-r" tabindex="0"><h2 class="mf-t"><span>Savoir-faire d’excellence</span></h2><div class="mf-x"><p>Face à une concurrence à bas prix partout en Europe et dans le monde, Grenoble n’a toujours connu qu’une seule voie : l’excellence. Les artisans ont forgé un Métier robuste et résilient.</p></div></section>
+      <section class="mf-r" tabindex="0"><h2 class="mf-t"><span>Des gants taillés pour braver le temps</span></h2><div class="mf-x"><p>Les siècles, les guerres, les modes éphémères ont passé. Le gant de Grenoble n’a jamais cédé au compromis. Un savoir-faire de 1563, taillé pour braver le temps : l’insigne de ceux qui créent, qui façonnent, et dont l’œuvre traverse les âges.</p></div></section>
+      <section class="mf-r" tabindex="0"><h2 class="mf-t"><span>2026</span></h2><div class="mf-x"><p>Puis la filière s’est éteinte. Marchais-Honoré naît en 2026. Elle fait hommage aux grands noms de la ganterie, fait renaître ce savoir-faire là où il s’est développé, et construit de nouveau à Grenoble la production qui fit sa renommée.</p></div></section>
     </article>
   </main>
   <footer class="foot">© 2026 Marchais-Honoré — Marque déposée<a href="https://www.linkedin.com/company/marchais-honoré/" target="_blank" rel="noopener me">LinkedIn</a></footer>
@@ -164,6 +189,26 @@ main{padding-top:var(--hh);min-height:calc(100vh - var(--fh))}
   /* menu mobile */
   var bt=document.getElementById('burger');
   if(bt)bt.addEventListener('click',function(){var o=hdr.classList.toggle('open');bt.setAttribute('aria-expanded',o?'true':'false')});
+})();
+</script><script>
+(function(){
+var rows=[].slice.call(document.querySelectorAll('.mf-r'));if(!rows.length)return;
+var t0=Date.now(),touched=false;
+setTimeout(function(){rows[0].classList.add('on')},450);
+var touch=window.matchMedia('(hover:none)').matches||window.matchMedia('(max-width:760px)').matches;
+if(!touch){
+  var on=function(r){touched=true;r.classList.add('on')};
+  rows.forEach(function(r,i){if(!i)return;
+    r.addEventListener('mouseenter',function(){on(r)});
+    r.addEventListener('focus',function(){on(r)});
+  });
+  setTimeout(function(){if(touched)return;
+    rows.forEach(function(r,i){if(i)setTimeout(function(){r.classList.add('on')},(i-1)*1100)})},5000);
+}else if('IntersectionObserver' in window){
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;io.unobserve(e.target);
+    var d=Math.max(2000-(Date.now()-t0),600);setTimeout(function(){e.target.classList.add('on')},d)})},{threshold:.55});
+  rows.forEach(function(r,i){if(i)io.observe(r)});
+}else{rows.forEach(function(r,i){if(i)setTimeout(function(){r.classList.add('on')},2000+i*500)})}
 })();
 </script>
 </body>

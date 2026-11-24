@@ -1,9 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://xn--marchais-honor-okb.com/</loc><lastmod>2026-11-23</lastmod></url>
-  <url><loc>https://xn--marchais-honor-okb.com/manifeste.html</loc><lastmod>2026-11-23</lastmod></url>
-  <url><loc>https://xn--marchais-honor-okb.com/academie.html</loc><lastmod>2026-11-23</lastmod></url>
-  <url><loc>https://xn--marchais-honor-okb.com/archives.html</loc><lastmod>2026-11-23</lastmod></url>
-  <url><loc>https://xn--marchais-honor-okb.com/femmes.html</loc><lastmod>2026-11-23</lastmod></url>
-  <url><loc>https://xn--marchais-honor-okb.com/hommes.html</loc><lastmod>2026-11-23</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://xn--marchais-honor-okb.com/</loc>
+    <lastmod>2026-11-24</lastmod>
+  </url>
+  <url>
+    <loc>https://xn--marchais-honor-okb.com/manifeste.html</loc>
+    <lastmod>2026-11-24</lastmod>
+  </url>
+  <url>
+    <loc>https://xn--marchais-honor-okb.com/academie.html</loc>
+    <lastmod>2026-11-24</lastmod>
+  </url>
+  <url>
+    <loc>https://xn--marchais-honor-okb.com/dossiers.html</loc>
+    <lastmod>2026-11-24</lastmod>
+  </url>
+  <url>
+    <loc>https://xn--marchais-honor-okb.com/dossier-gantiers-parfumeurs.html</loc>
+    <lastmod>2026-11-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://xn--marchais-honor-okb.com/dossier-gantiers-parfumeurs.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--marchais-honor-okb.com/dossier-glover-perfumers.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--marchais-honor-okb.com/dossier-gantiers-parfumeurs.html"/>
+  </url>
+  <url>
+    <loc>https://xn--marchais-honor-okb.com/dossier-glover-perfumers.html</loc>
+    <lastmod>2026-11-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://xn--marchais-honor-okb.com/dossier-gantiers-parfumeurs.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--marchais-honor-okb.com/dossier-glover-perfumers.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--marchais-honor-okb.com/dossier-gantiers-parfumeurs.html"/>
+  </url>
+  <url>
+    <loc>https://xn--marchais-honor-okb.com/archives.html</loc>
+    <lastmod>2026-11-24</lastmod>
+  </url>
+  <url>
+    <loc>https://xn--marchais-honor-okb.com/femmes.html</loc>
+    <lastmod>2026-11-24</lastmod>
+  </url>
+  <url>
+    <loc>https://xn--marchais-honor-okb.com/hommes.html</loc>
+    <lastmod>2026-11-24</lastmod>
+  </url>
 </urlset>
